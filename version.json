@@ -1,15 +1,16 @@
 {
-  "versionCode": 12,
-  "versionName": "1.6.0-OEM",
+  "versionCode": 13,
+  "versionName": "1.6.1-OEM",
   "minAndroidVersion": 21,
-  "releaseDate": "2026-09-03",
-  "apkUrl": "https://raw.githubusercontent.com/krisdwiantara12/innova2kd/main/RELEASE_APK/Innova2KD_CoPilot_v1.6.0.apk",
+  "releaseDate": "2026-09-04",
+  "apkUrl": "https://raw.githubusercontent.com/krisdwiantara12/innova2kd/main/RELEASE_APK/Innova2KD_CoPilot_v1.6.1.apk",
   "changelog": [
-    "Optimasi Khusus Android 12 (API 31/32): Penerapan ContextCompat.RECEIVER_EXPORTED pada seluruh broadcast receiver hardware",
-    "Arsitektur Hemat RAM 2GB: Eliminasi alokasi memori dinamis di onDraw() Inclinometer & Voltmeter, bebas micro-stutter",
-    "Dirty-Check Sensor Throttling: Mengurangi siklus CPU hingga 65% dengan hanya meng-update UI saat sudut derajat & G-Force berubah riil",
-    "largeHeap Android Runtime: Mengaktifkan batas heap maksimal pada Android 12 agar launcher kebal dari Low Memory Killer (LMK)",
-    "I/O Disk Throttling: Menunda penyimpanan SharedPreferences peak G-Force ke saat mobil mati/sleep agar memori NAND flash 32GB awet"
+    "FIX PERMANEN: Error 'Terjadi kesalahan saat mengurai paket' diatasi secara definitif dengan 3 solusi paralel",
+    "Deteksi Otomatis Signature Mismatch: Jika sertifikat APK baru berbeda dari yang terpasang, sistem otomatis mengarahkan uninstall lalu install ulang",
+    "Triple Integrity Verification: Content-Length matching + PackageManager parse check + minimum file size check sebelum installer dibuka",
+    "Multi-Layer Install Fallback: FileProvider → StrictMode bypass → ACTION_INSTALL_PACKAGE untuk kompatibilitas penuh HU Cina",
+    "Download Buffer 16KB + fd.sync(): Memastikan data tertulis sempurna ke chip eMMC sebelum verifikasi",
+    "Auto Cleanup: Otomatis bersihkan file APK update lama untuk menghemat storage 32GB"
   ],
   "forceUpdate": false
 }
