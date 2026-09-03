@@ -30,12 +30,12 @@ git commit -m "%msg%"
 
 echo.
 echo [3/3] Mengunggah ke GitHub (Push ke branch main)...
-git push origin main
+git -c "credential.helper=" -c "credential.helper=wincred" push origin main
 
 if %ERRORLEVEL% equ 0 (
     echo.
     echo =======================================================
-    echo   [SUKSES] Sinkronisasi ke GitHub Berhasil 100%!
+    echo   [SUKSES] Sinkronisasi ke GitHub Berhasil 100%%!
     echo   - Repositori: https://github.com/krisdwiantara12/innova2kd
     echo   - Headunit kini siap mendeteksi update via Hotspot HP!
     echo =======================================================
