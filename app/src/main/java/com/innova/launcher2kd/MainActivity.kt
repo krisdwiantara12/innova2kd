@@ -24,10 +24,14 @@ import com.innova.launcher2kd.audio.AudioDspSuite
 import com.innova.launcher2kd.view.VoltmeterBarView
 import com.innova.launcher2kd.service.AutoDimmer
 import com.innova.launcher2kd.service.BatterySentinel
+import com.innova.launcher2kd.service.CarHardwareSentinel
 import com.innova.launcher2kd.service.GpsSpeedManager
 import com.innova.launcher2kd.service.MaintenanceManager
 import com.innova.launcher2kd.service.Obd2Manager
+import com.innova.launcher2kd.service.PerformanceTimer
+import com.innova.launcher2kd.service.SpeedFusionManager
 import com.innova.launcher2kd.service.UpdateManager
+import com.innova.launcher2kd.service.WeatherManager
 import com.innova.launcher2kd.ui.AppDrawerDialog
 import com.innova.launcher2kd.ui.AppPickerDialog
 import com.innova.launcher2kd.ui.AudioDialog
@@ -52,12 +56,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var audioManager: AudioManager
     private lateinit var prefs: SharedPreferences
 
+    // Concerto Headunit Suite Services
+    private lateinit var speedFusionManager: SpeedFusionManager
+    private lateinit var weatherManager: WeatherManager
+    private lateinit var carHardwareSentinel: CarHardwareSentinel
+    private lateinit var performanceTimer: PerformanceTimer
+
     // UI Views - Top Bar
     private lateinit var tvGpsStatus: TextView
+    private lateinit var tvHandbrakeBadge: TextView
+    private lateinit var tvHeadlightBadge: TextView
+    private lateinit var tvWeatherInfo: TextView
     private lateinit var tvBatteryVoltage: TextView
     private lateinit var tvCockpitBrand: TextView
     private lateinit var tvTotalOdo: TextView
     private lateinit var tvClock: TextView
+    private lateinit var btnVoiceAssistant: View
     private lateinit var btnScreenOff: View
 
     // UI Views - Left (3D Speedometer Cluster & OBD2 Telemetry)
@@ -85,6 +99,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pbServiceFuel: ProgressBar
     private lateinit var tvBioSolarAlert: TextView
     private lateinit var tvEngineHours: TextView
+
+    // UI Views - Center Additions (Radio & Drag Timer)
+    private lateinit var tvRadioFreq: TextView
+    private lateinit var btnOpenRadio: View
+    private lateinit var tvDragTimerStatus: TextView
+    private lateinit var tvDragRecord: TextView
+    private lateinit var btnResetDrag: View
+
+    // UI Views - Bottom Bar Additions
+    private lateinit var btnPhoneBT: View
 
     // UI Views - Right (3D App Shortcuts)
     private lateinit var btnShortcut1: View
@@ -173,10 +197,20 @@ class MainActivity : AppCompatActivity() {
         autoDimmer = AutoDimmer(this)
         autoDimmer.setAutoDimmingEnabled(isAutoDimmingEnabled)
 
-        // GPS Speed Manager (Precision with Altitude, Cardinal Heading, and Haversine Distance)
-        gpsSpeedManager = GpsSpeedManager(
+        // 1. Performance Drag Sprint Timer (0-60 & 0-100 KM/H)
+        performanceTimer = PerformanceTimer(this) { status, _, time0to60, time0to100 ->
+            runOnUiThread {
+                tvDragTimerStatus.text = "⏱️ $status"
+                val t60Str = if (time0to60 > 0) String.format(Locale.US, "%.1fs", time0to60) else "--s"
+                val t100Str = if (time0to100 > 0) String.format(Locale.US, "%.1fs", time0to100) else "--s"
+                tvDragRecord.text = "0-60: $t60Str | 0-100: $t100Str"
+            }
+        }
+
+        // 2. Multi-Source Speed Fusion (Kabel VSS MCU + Inersia + AGPS + GPS)
+        speedFusionManager = SpeedFusionManager(
             this,
-            onSpeedUpdate = { speed, altitude, heading, _ ->
+            onSpeedUpdate = { speed, altitude, heading, _, _ ->
                 runOnUiThread {
                     currentSpeed = speed
                     tvSpeedNumber.text = speed.toString()
@@ -194,6 +228,9 @@ class MainActivity : AppCompatActivity() {
 
                     // Speed-Compensated Volume (SVC)
                     audioDspSuite.onSpeedChanged(speed)
+
+                    // Drag Timer
+                    performanceTimer.onSpeedUpdate(speed)
                 }
             },
             onDistanceUpdate = { deltaKm ->
@@ -205,15 +242,38 @@ class MainActivity : AppCompatActivity() {
                     updateTripComputerViews()
                 }
             },
-            onGpsStatusChanged = { isLocked ->
+            onStatusChanged = { statusText ->
                 runOnUiThread {
-                    if (isLocked) {
-                        tvGpsStatus.text = "GPS: LOCK (SATELIT 3D)"
-                        tvGpsStatus.setTextColor(ContextCompat.getColor(this, R.color.status_green))
-                    } else {
-                        tvGpsStatus.text = "GPS: MENCARI SATELIT..."
-                        tvGpsStatus.setTextColor(ContextCompat.getColor(this, R.color.status_warning))
-                    }
+                    tvGpsStatus.text = statusText
+                    tvGpsStatus.setTextColor(ContextCompat.getColor(this, R.color.status_green))
+                }
+            }
+        )
+
+        // 3. Live Weather & Outside Temp
+        weatherManager = WeatherManager(this) { city, tempC, _, iconEmoji ->
+            runOnUiThread {
+                tvWeatherInfo.text = "$iconEmoji $tempC°C $city"
+            }
+        }
+
+        // 4. Car Hardware Sentinel (Brake, Illumination, Launchers)
+        carHardwareSentinel = CarHardwareSentinel(
+            this,
+            onHandbrakeChanged = { isActive ->
+                runOnUiThread {
+                    tvHandbrakeBadge.visibility = if (isActive) View.VISIBLE else View.GONE
+                }
+            },
+            onHeadlightChanged = { isOn ->
+                runOnUiThread {
+                    tvHeadlightBadge.visibility = if (isOn) View.VISIBLE else View.GONE
+                    autoDimmer.onHeadlightToggled(isOn)
+                }
+            },
+            onBluetoothStatusChanged = { isConnected, _ ->
+                runOnUiThread {
+                    btnPhoneBT.alpha = if (isConnected) 1.0f else 0.7f
                 }
             }
         )
@@ -363,10 +423,14 @@ class MainActivity : AppCompatActivity() {
     private fun bindViews() {
         // Top status & branding
         tvGpsStatus = findViewById(R.id.tvGpsStatus)
+        tvHandbrakeBadge = findViewById(R.id.tvHandbrakeBadge)
+        tvHeadlightBadge = findViewById(R.id.tvHeadlightBadge)
+        tvWeatherInfo = findViewById(R.id.tvWeatherInfo)
         tvBatteryVoltage = findViewById(R.id.tvBatteryVoltage)
         tvCockpitBrand = findViewById(R.id.tvCockpitBrand)
         tvTotalOdo = findViewById(R.id.tvTotalOdo)
         tvClock = findViewById(R.id.tvClock)
+        btnVoiceAssistant = findViewById(R.id.btnVoiceAssistant)
         btnScreenOff = findViewById(R.id.btnScreenOff)
 
         // Left Speedometer & OBD2 Telemetry
@@ -398,6 +462,13 @@ class MainActivity : AppCompatActivity() {
         tvBioSolarAlert = findViewById(R.id.tvBioSolarAlert)
         tvEngineHours = findViewById(R.id.tvEngineHours)
 
+        // Radio & Drag Timer
+        tvRadioFreq = findViewById(R.id.tvRadioFreq)
+        btnOpenRadio = findViewById(R.id.btnOpenRadio)
+        tvDragTimerStatus = findViewById(R.id.tvDragTimerStatus)
+        tvDragRecord = findViewById(R.id.tvDragRecord)
+        btnResetDrag = findViewById(R.id.btnResetDrag)
+
         // Right Shortcuts
         btnShortcut1 = findViewById(R.id.btnShortcut1)
         tvName1 = findViewById(R.id.tvName1)
@@ -419,10 +490,20 @@ class MainActivity : AppCompatActivity() {
         // Bottom Bar
         sbVolume = findViewById(R.id.sbVolume)
         btnMute = findViewById(R.id.btnMute)
+        btnPhoneBT = findViewById(R.id.btnPhoneBT)
         btnOpenAudio = findViewById(R.id.btnOpenAudio)
         btnOpenFuse = findViewById(R.id.btnOpenFuse)
         btnOpenSettings = findViewById(R.id.btnOpenSettings)
         screenOffOverlay = findViewById(R.id.screenOffOverlay)
+
+        // Listeners for native hardware features
+        btnVoiceAssistant.setOnClickListener { carHardwareSentinel.launchVoiceAssistant() }
+        btnOpenRadio.setOnClickListener { carHardwareSentinel.launchRadioApp() }
+        btnPhoneBT.setOnClickListener { carHardwareSentinel.launchBluetoothPhoneApp() }
+        btnResetDrag.setOnClickListener {
+            performanceTimer.resetRecords()
+            Toast.makeText(this, "Rekor Sprint di-reset", Toast.LENGTH_SHORT).show()
+        }
 
         // Apply initial text & brand
         tvCockpitBrand.text = "✦ $cockpitBrand ✦"
@@ -709,6 +790,9 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
         )
+        speedFusionManager.start()
+        weatherManager.start()
+        carHardwareSentinel.start()
         batterySentinel.start()
         autoDimmer.start()
         initVolumeSlider()
@@ -734,10 +818,12 @@ class MainActivity : AppCompatActivity() {
             ivGaugeRing.clearAnimation()
             tvCockpitBrand.clearAnimation()
         } catch (e: Exception) {}
+        speedFusionManager.stop()
+        weatherManager.stop()
+        carHardwareSentinel.stop()
         batterySentinel.stop()
         autoDimmer.stop()
         obd2Manager.stop()
-        gpsSpeedManager.stopListening()
         saveTripState()
     }
 }

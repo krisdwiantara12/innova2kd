@@ -21,7 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- GPS Satellite Status -->
+        <!-- GPS & Multi-Sensor Status -->
         <ImageView
             android:layout_width="16dp"
             android:layout_height="16dp"
@@ -32,15 +32,45 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
-            android:text="GPS: LOCK (SATELIT 3D)"
+            android:text="SPEED: FUSION (VSS+GPS)"
             android:textColor="@color/status_green"
-            android:textSize="11sp"
+            android:textSize="10sp"
             android:textStyle="bold" />
+
+        <!-- Handbrake Status Badge -->
+        <TextView
+            android:id="@+id/tvHandbrakeBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/bg_badge_red"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
+            android:text="(P) REM"
+            android:textColor="@color/status_danger"
+            android:textSize="9sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <!-- Headlight Status Badge -->
+        <TextView
+            android:id="@+id/tvHeadlightBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/bg_badge_green"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
+            android:text="💡 LAMPU"
+            android:textColor="@color/status_green"
+            android:textSize="9sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
 
         <View
             android:layout_width="1dp"
             android:layout_height="16dp"
-            android:layout_marginHorizontal="10dp"
+            android:layout_marginHorizontal="8dp"
             android:background="@color/border_subtle" />
 
         <!-- Battery Real Voltage -->
@@ -48,9 +78,28 @@
             android:id="@+id/tvBatteryVoltage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="AKI: 13.8V"
+            android:text="AKI: 13.80V"
             android:textColor="@color/text_primary"
-            android:textSize="11sp"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="16dp"
+            android:layout_marginHorizontal="8dp"
+            android:background="@color/border_subtle" />
+
+        <!-- Live Weather & Outside Temp Pill -->
+        <TextView
+            android:id="@+id/tvWeatherInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_pill_accent"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:text="⛅ 30°C INDONESIA"
+            android:textColor="@color/text_primary"
+            android:textSize="10sp"
             android:textStyle="bold" />
 
         <View
@@ -108,10 +157,38 @@
             android:textSize="13sp"
             android:textStyle="bold" />
 
+        <!-- Google Voice Assistant 1-Tap Button -->
+        <LinearLayout
+            android:id="@+id/btnVoiceAssistant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="3dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_mic" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:text="SUARA"
+                android:textColor="@color/accent_amber"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
         <View
             android:layout_width="1dp"
             android:layout_height="16dp"
-            android:layout_marginHorizontal="10dp"
+            android:layout_marginHorizontal="8dp"
             android:background="@color/border_subtle" />
 
         <!-- Screen Off Stealth Mode -->
@@ -649,6 +726,93 @@
                 android:visibility="gone" />
         </LinearLayout>
 
+        <!-- Concerto FM/AM Radio Tuner Card -->
+        <LinearLayout
+            android:id="@+id/llRadioCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_button_shortcut"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            app:layout_constraintTop_toBottomOf="@id/llFuelService">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_radio"
+                app:tint="@color/accent_cyan" />
+
+            <TextView
+                android:id="@+id/tvRadioFreq"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="RADIO FM: 102.7 MHz"
+                android:textColor="@color/text_primary"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnOpenRadio"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="0dp"
+                android:text="[ 📻 BUKA ]"
+                android:textColor="@color/accent_cyan"
+                android:textSize="9sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- 0-100 KM/H Drag Acceleration Sprint Timer Card -->
+        <LinearLayout
+            android:id="@+id/llDragTimerCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_button_shortcut"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            app:layout_constraintTop_toBottomOf="@id/llRadioCard">
+
+            <TextView
+                android:id="@+id/tvDragTimerStatus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="⏱️ SPRINT: STANDBY"
+                android:textColor="@color/accent_amber"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvDragRecord"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:text="0-60: --s | 0-100: --s"
+                android:textColor="@color/text_secondary"
+                android:textSize="9sp" />
+
+            <Button
+                android:id="@+id/btnResetDrag"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="0dp"
+                android:text="[ ↺ ]"
+                android:textColor="@color/text_dim"
+                android:textSize="9sp" />
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- ==================== RIGHT: 3D BEVELED APP DOCK ==================== -->
@@ -865,6 +1029,34 @@
             android:progress="8"
             android:progressTint="@color/accent_amber"
             android:thumbTint="@color/accent_amber" />
+
+        <!-- Bluetooth Handsfree Phone Button -->
+        <LinearLayout
+            android:id="@+id/btnPhoneBT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_phone"
+                app:tint="@color/status_green" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="TELEPON"
+                android:textColor="@color/text_primary"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <View
             android:layout_width="1dp"
