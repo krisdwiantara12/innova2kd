@@ -11,8 +11,8 @@ android {
         applicationId = "com.innova.launcher2kd"
         minSdk = 24 // Support Android 7.0 Nougat up to Android 14+ (covers all Android Headunits)
         targetSdk = 34
-        versionCode = 5
-        versionName = "1.2.1-OEM"
+        versionCode = 6
+        versionName = "1.3.0-OEM"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

@@ -1,18 +1,16 @@
 {
-  "versionCode": 5,
-  "versionName": "1.2.1-OEM",
+  "versionCode": 6,
+  "versionName": "1.3.0-OEM",
   "minAndroidVersion": 24,
   "releaseDate": "2026-09-03",
-  "apkUrl": "https://raw.githubusercontent.com/krisdwiantara12/innova2kd/main/RELEASE_APK/Innova2KD_CoPilot_v1.2.1.apk",
+  "apkUrl": "https://raw.githubusercontent.com/krisdwiantara12/innova2kd/main/RELEASE_APK/Innova2KD_CoPilot_v1.3.0.apk",
   "changelog": [
-    "Tampilan kokpit ultra-bersih: Modul ELM327 tersembunyi default jika belum terpasang",
-    "Transisi animasi halus: HUD Turbo Boost & Suhu Mesin muncul otomatis saat ELM327 terhubung",
-    "Integrasi OBD2 Bluetooth (ELM327): Turbo Boost (Bar), Suhu Radiator (ECT °C), dan RPM",
-    "Pembacaan Voltase Aki Riil langsung dari Pin 16 OBD2 ECU mobil",
-    "Persistent Trip Computer cerdas (retensi 2 jam saat mati di rest area/SPBU) + tombol Reset",
-    "Smart Auto-Dimming: Peredupan otomatis layar malam hari (18:00 - 06:00)",
-    "Peringatan Dini Kritis BioSolar B35 saat filter solar tersisa < 500 KM",
-    "Desain 3D Cockpit futuristik dan custom branding SANEPO"
+    "Luxury 10 Inch Cockpit Edition: Latar belakang serat karbon gelap & ambient glow mobil kelas atas",
+    "Animasi Breathing Glow 60fps hemat baterai pada speedometer ring dan plakat SANEPO",
+    "Concerto Precision Battery Engine: Pembacaan voltase ADC hardware riil dengan filter EMA presisi 0.01V",
+    "Dual Voltmeter Bar Gauge: Zona visual drop (10V), standby (12.6V), dan alternator charging (14.5V+)",
+    "Optimalisasi rasio layar widescreen dan ergonomi khusus Headunit 10 Inci Concerto",
+    "Integrasi cerdas OBD2 ELM327 (Turbo Boost & Suhu Mesin) otomatis tampil saat terhubung"
   ],
   "forceUpdate": false
 }

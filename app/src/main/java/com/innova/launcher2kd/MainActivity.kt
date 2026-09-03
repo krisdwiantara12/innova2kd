@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -20,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.innova.launcher2kd.audio.AudioDspSuite
+import com.innova.launcher2kd.view.VoltmeterBarView
 import com.innova.launcher2kd.service.AutoDimmer
 import com.innova.launcher2kd.service.BatterySentinel
 import com.innova.launcher2kd.service.GpsSpeedManager
@@ -59,6 +61,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnScreenOff: View
 
     // UI Views - Left (3D Speedometer Cluster & OBD2 Telemetry)
+    private lateinit var ivGaugeRing: ImageView
     private lateinit var tvSpeedNumber: TextView
     private lateinit var tvSpeedUnit: TextView
     private lateinit var tvSpeedLimit: TextView
@@ -75,6 +78,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvTripAvgSpeed: TextView
     private lateinit var btnResetTrip: Button
     private lateinit var tvCrankingVoltage: TextView
+    private lateinit var vVoltmeterBar: VoltmeterBarView
     private lateinit var tvServiceOilKm: TextView
     private lateinit var pbServiceOil: ProgressBar
     private lateinit var tvServiceFuelKm: TextView
@@ -214,11 +218,12 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
-        // Battery Sentinel (Real voltage & Cranking drop detection)
+        // Battery Sentinel (Concerto Multi-Source Precision Battery Engine)
         batterySentinel = BatterySentinel(this) { voltage, isCrankingDrop, status ->
             runOnUiThread {
-                tvBatteryVoltage.text = String.format(Locale.US, "AKI: %.1fV", voltage)
-                tvCrankingVoltage.text = String.format(Locale.US, "%.1fV (%s)", voltage, status)
+                tvBatteryVoltage.text = String.format(Locale.US, "AKI: %.2fV", voltage)
+                tvCrankingVoltage.text = String.format(Locale.US, "%.2fV (%s)", voltage, status)
+                vVoltmeterBar.setVoltage(voltage)
                 if (isCrankingDrop) {
                     tvCrankingVoltage.setTextColor(ContextCompat.getColor(this, R.color.status_danger))
                     Toast.makeText(this, "PERINGATAN 2KD: Drop voltase starter! Aki perlu dicek.", Toast.LENGTH_LONG).show()
@@ -231,7 +236,7 @@ class MainActivity : AppCompatActivity() {
         // OBD2 Bluetooth Manager (ELM327 for 2KD-FTV)
         obd2Manager = Obd2Manager(
             this,
-            onDataReceived = { voltage, ect, boostBar, rpm ->
+            onDataReceived = { voltage, ect, boostBar, _ ->
                 runOnUiThread {
                     // Update Turbo Boost
                     tvTurboBoost.text = String.format(Locale.US, "TURBO: +%.1f BAR", boostBar)
@@ -249,7 +254,8 @@ class MainActivity : AppCompatActivity() {
 
                     // Update Real Battery Voltage from OBD2 Pin 16 if valid
                     if (voltage > 9.0f) {
-                        tvBatteryVoltage.text = String.format(Locale.US, "AKI: %.1fV", voltage)
+                        tvBatteryVoltage.text = String.format(Locale.US, "AKI: %.2fV", voltage)
+                        vVoltmeterBar.setVoltage(voltage)
                     }
                 }
             },
@@ -364,6 +370,7 @@ class MainActivity : AppCompatActivity() {
         btnScreenOff = findViewById(R.id.btnScreenOff)
 
         // Left Speedometer & OBD2 Telemetry
+        ivGaugeRing = findViewById(R.id.ivGaugeRing)
         tvSpeedNumber = findViewById(R.id.tvSpeedNumber)
         tvSpeedUnit = findViewById(R.id.tvSpeedUnit)
         tvSpeedLimit = findViewById(R.id.tvSpeedLimit)
@@ -383,6 +390,7 @@ class MainActivity : AppCompatActivity() {
         tvTripAvgSpeed = findViewById(R.id.tvTripAvgSpeed)
         btnResetTrip = findViewById(R.id.btnResetTrip)
         tvCrankingVoltage = findViewById(R.id.tvCrankingVoltage)
+        vVoltmeterBar = findViewById(R.id.vVoltmeterBar)
         tvServiceOilKm = findViewById(R.id.tvServiceOilKm)
         pbServiceOil = findViewById(R.id.pbServiceOil)
         tvServiceFuelKm = findViewById(R.id.tvServiceFuelKm)
@@ -706,6 +714,13 @@ class MainActivity : AppCompatActivity() {
         initVolumeSlider()
         updateMaintenanceViews()
 
+        // Start luxury breathing glow animation on speedometer & SANEPO brand
+        try {
+            val breathAnim = AnimationUtils.loadAnimation(this, R.anim.anim_breathing_glow)
+            ivGaugeRing.startAnimation(breathAnim)
+            tvCockpitBrand.startAnimation(breathAnim)
+        } catch (e: Exception) {}
+
         // Auto-reconnect OBD2 if previously paired
         val lastObd = prefs.getString("obd2_last_device", null)
         if (lastObd != null) {
@@ -715,6 +730,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        try {
+            ivGaugeRing.clearAnimation()
+            tvCockpitBrand.clearAnimation()
+        } catch (e: Exception) {}
         batterySentinel.stop()
         autoDimmer.stop()
         obd2Manager.stop()

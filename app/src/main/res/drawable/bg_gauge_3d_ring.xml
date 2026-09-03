@@ -1,56 +1,102 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="220dp"
-    android:height="220dp"
-    android:viewportWidth="220"
-    android:viewportHeight="220">
+    android:width="240dp"
+    android:height="240dp"
+    android:viewportWidth="240"
+    android:viewportHeight="240">
 
-    <!-- Outer Bezel Ring -->
+    <!-- Layer 0: Deep Shadow & Ambient Outer Ring -->
     <path
-        android:fillColor="#151C28"
-        android:strokeColor="#2E3C52"
-        android:strokeWidth="2"
-        android:pathData="M110,110m-105,0a105,105 0 1,1 210,0a105,105 0 1,1 -210,0" />
+        android:fillColor="#080C14"
+        android:strokeColor="#1E293B"
+        android:strokeWidth="1.5"
+        android:pathData="M120,120m-115,0a115,115 0 1,1 230,0a115,115 0 1,1 -230,0" />
 
-    <!-- Outer Glow Track -->
+    <!-- Layer 1: Titanium Brushed Bezel Ring -->
     <path
-        android:strokeColor="#1F2A3D"
-        android:strokeWidth="6"
+        android:fillColor="#0D1424"
+        android:strokeColor="#334155"
+        android:strokeWidth="3"
+        android:pathData="M120,120m-108,0a108,108 0 1,1 216,0a108,108 0 1,1 -216,0" />
+
+    <!-- Chrome Reflection Highlights -->
+    <path
+        android:strokeColor="#64748B"
+        android:strokeWidth="1.5"
         android:strokeLineCap="round"
-        android:pathData="M35,165 A90,90 0 1,1 185,165" />
+        android:pathData="M50,45 A105,105 0 0,1 190,45" />
 
-    <!-- Active Neon Arc (Primary Accent) -->
+    <!-- Layer 2: Main Speed Track (Dark Cyber Groove) -->
     <path
-        android:strokeColor="#FF9E1B"
+        android:strokeColor="#111827"
+        android:strokeWidth="10"
+        android:strokeLineCap="round"
+        android:pathData="M40,185 A95,95 0 1,1 200,185" />
+
+    <!-- Layer 3: Neon Active Arc (Dynamic Glow) -->
+    <path
+        android:strokeColor="#D97706"
         android:strokeWidth="5"
         android:strokeLineCap="round"
-        android:pathData="M35,165 A90,90 0 0,1 110,20" />
+        android:pathData="M40,185 A95,95 0 0,1 120,25" />
 
-    <!-- Inner Metallic Recess -->
+    <!-- Secondary Cyan Micro Arc (Luxury Accent) -->
     <path
-        android:fillColor="#0C0F17"
-        android:strokeColor="#3A4B66"
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M120,25 A95,95 0 0,1 170,45" />
+
+    <!-- Layer 4: Inner Bevel Core -->
+    <path
+        android:fillColor="#060A12"
+        android:strokeColor="#1E293B"
+        android:strokeWidth="2"
+        android:pathData="M120,120m-80,0a80,80 0 1,1 160,0a80,80 0 1,1 -160,0" />
+
+    <!-- Layer 5: Chrono Speed Graduations & Ticks -->
+    <!-- 12 O'Clock (100 KM/H Peak) -->
+    <path
+        android:strokeColor="#F59E0B"
+        android:strokeWidth="3"
+        android:pathData="M120,27 L120,38" />
+
+    <!-- Minor Ticks -->
+    <path
+        android:strokeColor="#94A3B8"
         android:strokeWidth="1.5"
-        android:pathData="M110,110m-75,0a75,75 0 1,1 150,0a75,75 0 1,1 -150,0" />
+        android:pathData="M95,31 L98,40" />
+    <path
+        android:strokeColor="#94A3B8"
+        android:strokeWidth="1.5"
+        android:pathData="M145,31 L142,40" />
 
-    <!-- Radial Tick Marks -->
+    <!-- Major Quarter Ticks -->
     <path
-        android:strokeColor="#526482"
-        android:strokeWidth="2"
-        android:pathData="M110,15 L110,24" />
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="2.5"
+        android:pathData="M65,58 L72,65" />
     <path
-        android:strokeColor="#526482"
-        android:strokeWidth="2"
-        android:pathData="M177,43 L171,49" />
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="2.5"
+        android:pathData="M175,58 L168,65" />
+
+    <!-- 9 O'Clock & 3 O'Clock -->
     <path
-        android:strokeColor="#526482"
+        android:strokeColor="#64748B"
         android:strokeWidth="2"
-        android:pathData="M205,110 L196,110" />
+        android:pathData="M27,120 L38,120" />
     <path
-        android:strokeColor="#526482"
+        android:strokeColor="#64748B"
         android:strokeWidth="2"
-        android:pathData="M15,110 L24,110" />
+        android:pathData="M202,120 L213,120" />
+
+    <!-- Bottom Arc Ends -->
     <path
-        android:strokeColor="#526482"
-        android:strokeWidth="2"
-        android:pathData="M43,43 L49,49" />
+        android:strokeColor="#EF4444"
+        android:strokeWidth="2.5"
+        android:pathData="M43,180 L52,174" />
+    <path
+        android:strokeColor="#EF4444"
+        android:strokeWidth="2.5"
+        android:pathData="M197,180 L188,174" />
 </vector>
