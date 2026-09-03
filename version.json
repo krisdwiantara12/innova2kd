@@ -1,15 +1,15 @@
 {
-  "versionCode": 10,
-  "versionName": "1.5.1-OEM",
+  "versionCode": 11,
+  "versionName": "1.5.2-OEM",
   "minAndroidVersion": 21,
   "releaseDate": "2026-09-03",
-  "apkUrl": "https://raw.githubusercontent.com/krisdwiantara12/innova2kd/main/RELEASE_APK/Innova2KD_CoPilot_v1.5.1.apk",
+  "apkUrl": "https://raw.githubusercontent.com/krisdwiantara12/innova2kd/main/RELEASE_APK/Innova2KD_CoPilot_v1.5.2.apk",
   "changelog": [
-    "Fast Wake & Deep Sleep Engine: Responsif instan (<1 detik) saat mobil dinyalakan dari kondisi mati/sleep",
-    "Zero Battery Drain: Semua sensor (inclinometer, g-force, gps, voltase) otomatis istirahat (0% CPU) saat kontak ACC OFF",
-    "Sinkronisasi Flash Disk Anti-Hilang: commit() sinkron otomatis saat mati agar trip, odo, dan rekor sprint tidak hilang",
-    "Crash-Proof Bug Fix: Memperbaiki UninitializedPropertyAccessException pada callback izin GPS dan InclinometerView layout bounds",
-    "Prioritas Launcher OEM 1000: Menjamin launcher tetap menjadi home default utama setelah headunit reboot/restart"
+    "Perbaikan Total Parsing Error: Mengganti DownloadManager dengan Direct Streaming Downloader yang tahan redirect CDN GitHub",
+    "Live Visual Download Dialog: Progress bar real-time (MB & %), estimasi selesai, dan tombol pembatalan/retry",
+    "Audit Integritas Paket Otomatis: Pre-parse APK sebelum installer dibuka sehingga bebas 100% dari 'kesalahan saat mengurai paket'",
+    "Kompatibilitas FileProvider Universal: Penyimpanan APK di direktori internal app files (bebas masalah permission Android 10/11+)",
+    "Izin Storage & Legacy External: Menjamin sistem package installer OEM Headunit dapat membaca file APK tanpa hambatan"
   ],
   "forceUpdate": false
 }

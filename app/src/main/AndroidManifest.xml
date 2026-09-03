@@ -20,6 +20,8 @@
     <!-- OTA Auto-Update Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" tools:ignore="ScopedStorage" />
 
     <!-- Bluetooth & OBD2 ELM327 Integration -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
@@ -35,6 +37,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Innova2KDLauncher"
         android:hardwareAccelerated="true"
+        android:requestLegacyExternalStorage="true"
         tools:targetApi="34">
 
         <activity

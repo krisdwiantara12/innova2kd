@@ -11,8 +11,8 @@ android {
         applicationId = "com.innova.launcher2kd"
         minSdk = 21 // Universal: Android 5.0 Lollipop s/d Android 14+
         targetSdk = 34
-        versionCode = 10
-        versionName = "1.5.1-OEM"
+        versionCode = 11
+        versionName = "1.5.2-OEM"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

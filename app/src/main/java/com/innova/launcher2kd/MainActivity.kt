@@ -402,10 +402,7 @@ class MainActivity : AppCompatActivity() {
             this,
             onUpdateAvailable = { versionName, changelog, apkUrl ->
                 runOnUiThread {
-                    UpdateDialog(this, versionName, changelog) {
-                        Toast.makeText(this, "Mengunduh pembaruan dari GitHub...", Toast.LENGTH_SHORT).show()
-                        updateManager.downloadAndInstall(apkUrl, versionName)
-                    }.show()
+                    UpdateDialog(this, versionName, changelog, apkUrl, updateManager).show()
                 }
             }
         )
