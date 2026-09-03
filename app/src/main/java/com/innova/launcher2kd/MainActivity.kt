@@ -62,6 +62,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvSpeedNumber: TextView
     private lateinit var tvSpeedUnit: TextView
     private lateinit var tvSpeedLimit: TextView
+    private lateinit var llObdTelemetry: View
     private lateinit var tvTurboBoost: TextView
     private lateinit var tvCoolantTemp: TextView
     private lateinit var tvHeading: TextView
@@ -252,14 +253,47 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             },
-            onStatusChanged = { statusText, isConnected ->
+            onStatusChanged = { _, isConnected ->
                 runOnUiThread {
                     if (isConnected) {
-                        tvObdStatus.text = "⚡ OBD2: ONLINE"
-                        tvObdStatus.setTextColor(ContextCompat.getColor(this, R.color.status_green))
+                        // Smooth reveal animation
+                        if (llObdTelemetry.visibility != View.VISIBLE) {
+                            llObdTelemetry.alpha = 0f
+                            llObdTelemetry.visibility = View.VISIBLE
+                            llObdTelemetry.animate()
+                                .alpha(1f)
+                                .setDuration(400)
+                                .start()
+
+                            tvObdStatus.alpha = 0f
+                            tvObdStatus.visibility = View.VISIBLE
+                            tvObdStatus.text = "⚡ 2KD ECU ONLINE"
+                            tvObdStatus.setTextColor(ContextCompat.getColor(this, R.color.status_green))
+                            tvObdStatus.animate()
+                                .alpha(1f)
+                                .setDuration(400)
+                                .start()
+
+                            Toast.makeText(this, "⚡ ELM327 Terhubung: Telemetri 2KD Aktif!", Toast.LENGTH_SHORT).show()
+                        }
                     } else {
-                        tvObdStatus.text = "⚡ OBD2: STANDBY"
-                        tvObdStatus.setTextColor(ContextCompat.getColor(this, R.color.text_dim))
+                        // Smooth hide animation (tetap bersih jika ELM327 tidak terpasang)
+                        if (llObdTelemetry.visibility == View.VISIBLE) {
+                            llObdTelemetry.animate()
+                                .alpha(0f)
+                                .setDuration(300)
+                                .withEndAction { llObdTelemetry.visibility = View.GONE }
+                                .start()
+
+                            tvObdStatus.animate()
+                                .alpha(0f)
+                                .setDuration(300)
+                                .withEndAction { tvObdStatus.visibility = View.GONE }
+                                .start()
+                        } else {
+                            llObdTelemetry.visibility = View.GONE
+                            tvObdStatus.visibility = View.GONE
+                        }
                     }
                 }
             }
@@ -333,10 +367,14 @@ class MainActivity : AppCompatActivity() {
         tvSpeedNumber = findViewById(R.id.tvSpeedNumber)
         tvSpeedUnit = findViewById(R.id.tvSpeedUnit)
         tvSpeedLimit = findViewById(R.id.tvSpeedLimit)
+        llObdTelemetry = findViewById(R.id.llObdTelemetry)
         tvTurboBoost = findViewById(R.id.tvTurboBoost)
         tvCoolantTemp = findViewById(R.id.tvCoolantTemp)
         tvHeading = findViewById(R.id.tvHeading)
         tvAltitude = findViewById(R.id.tvAltitude)
+
+        // Sembunyikan modul OBD2 hingga ELM327 benar-benar tersambung
+        llObdTelemetry.visibility = View.GONE
 
         // Center Telemetry & Trip
         tvObdStatus = findViewById(R.id.tvObdStatus)

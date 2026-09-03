@@ -1,10 +1,12 @@
 {
-  "versionCode": 4,
-  "versionName": "1.2.0-OEM",
+  "versionCode": 5,
+  "versionName": "1.2.1-OEM",
   "minAndroidVersion": 24,
   "releaseDate": "2026-09-03",
-  "apkUrl": "https://raw.githubusercontent.com/krisdwiantara12/innova2kd/main/RELEASE_APK/Innova2KD_CoPilot_v1.2.0.apk",
+  "apkUrl": "https://raw.githubusercontent.com/krisdwiantara12/innova2kd/main/RELEASE_APK/Innova2KD_CoPilot_v1.2.1.apk",
   "changelog": [
+    "Tampilan kokpit ultra-bersih: Modul ELM327 tersembunyi default jika belum terpasang",
+    "Transisi animasi halus: HUD Turbo Boost & Suhu Mesin muncul otomatis saat ELM327 terhubung",
     "Integrasi OBD2 Bluetooth (ELM327): Turbo Boost (Bar), Suhu Radiator (ECT °C), dan RPM",
     "Pembacaan Voltase Aki Riil langsung dari Pin 16 OBD2 ECU mobil",
     "Persistent Trip Computer cerdas (retensi 2 jam saat mati di rest area/SPBU) + tombol Reset",

@@ -212,7 +212,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvSpeedUnit" />
 
-        <!-- OBD2 Engine Telemetry (Turbo Boost & Coolant Temp) -->
+        <!-- OBD2 Engine Telemetry (Turbo Boost & Coolant Temp - Hidden until ELM327 connects) -->
         <LinearLayout
             android:id="@+id/llObdTelemetry"
             android:layout_width="match_parent"
@@ -222,6 +222,7 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingVertical="4dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/llSubTelemetry">
 
             <TextView
@@ -321,7 +322,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- OBD2 Status Clickable Pill -->
+        <!-- OBD2 Status Pill (Hidden until ELM327 connects) -->
         <TextView
             android:id="@+id/tvObdStatus"
             android:layout_width="wrap_content"
@@ -332,10 +333,11 @@
             android:focusable="true"
             android:paddingHorizontal="6dp"
             android:paddingVertical="1dp"
-            android:text="⚡ OBD2: STANDBY"
-            android:textColor="@color/text_dim"
+            android:text="⚡ 2KD ECU ONLINE"
+            android:textColor="@color/status_green"
             android:textSize="8sp"
             android:textStyle="bold"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/tvCardHeader"
             app:layout_constraintStart_toEndOf="@id/tvCardHeader"
             app:layout_constraintTop_toTopOf="@id/tvCardHeader" />

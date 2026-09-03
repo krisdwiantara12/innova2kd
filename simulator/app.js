@@ -367,8 +367,29 @@ document.addEventListener('DOMContentLoaded', () => {
       btnMute.textContent = 'UNMUTE';
     } else {
       volSlider.value = prevVol;
-      btnMute.textContent = 'MUTE';
-    }
-  });
+  // OBD2 Simulation Toggle
+  const btnToggleSimObd = document.getElementById('btnToggleSimObd');
+  const simObdTelemetry = document.getElementById('simObdTelemetry');
+  let isObdConnected = false;
+
+  if (btnToggleSimObd && simObdTelemetry) {
+    btnToggleSimObd.addEventListener('click', () => {
+      isObdConnected = !isObdConnected;
+      if (isObdConnected) {
+        simObdTelemetry.style.display = 'flex';
+        simObdTelemetry.style.opacity = '0';
+        setTimeout(() => { simObdTelemetry.style.opacity = '1'; }, 50);
+        btnToggleSimObd.textContent = '🔌 CABUT ELM327 OBD2 (ONLINE)';
+        btnToggleSimObd.style.borderColor = '#10b981';
+        btnToggleSimObd.style.color = '#10b981';
+      } else {
+        simObdTelemetry.style.opacity = '0';
+        setTimeout(() => { simObdTelemetry.style.display = 'none'; }, 300);
+        btnToggleSimObd.textContent = '⚡ TEST SAMBUNG ELM327 OBD2';
+        btnToggleSimObd.style.borderColor = 'rgba(56,189,248,0.3)';
+        btnToggleSimObd.style.color = '#38bdf8';
+      }
+    });
+  }
 
 });
