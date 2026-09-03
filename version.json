@@ -1,16 +1,16 @@
 {
-  "versionCode": 6,
-  "versionName": "1.3.0-OEM",
-  "minAndroidVersion": 24,
+  "versionCode": 7,
+  "versionName": "1.3.1-OEM",
+  "minAndroidVersion": 21,
   "releaseDate": "2026-09-03",
-  "apkUrl": "https://raw.githubusercontent.com/krisdwiantara12/innova2kd/main/RELEASE_APK/Innova2KD_CoPilot_v1.3.0.apk",
+  "apkUrl": "https://raw.githubusercontent.com/krisdwiantara12/innova2kd/main/RELEASE_APK/Innova2KD_CoPilot_v1.3.1.apk",
   "changelog": [
-    "Luxury 10 Inch Cockpit Edition: Latar belakang serat karbon gelap & ambient glow mobil kelas atas",
-    "Animasi Breathing Glow 60fps hemat baterai pada speedometer ring dan plakat SANEPO",
+    "Perbaikan Masalah Mengurai Paket: Kompatibilitas universal Android 5.0 Lollipop s/d Android 14+",
+    "Aktivasi Skema Tanda Tangan Ganda v1 (JAR) & v2 (Full) untuk firmware Headunit Concerto / Cina",
+    "Pembersihan Package Name resmi com.innova.launcher2kd tanpa suffix debug",
+    "Luxury 10 Inch Cockpit Edition: Latar belakang serat karbon gelap & ambient glow mewah",
     "Concerto Precision Battery Engine: Pembacaan voltase ADC hardware riil dengan filter EMA presisi 0.01V",
-    "Dual Voltmeter Bar Gauge: Zona visual drop (10V), standby (12.6V), dan alternator charging (14.5V+)",
-    "Optimalisasi rasio layar widescreen dan ergonomi khusus Headunit 10 Inci Concerto",
-    "Integrasi cerdas OBD2 ELM327 (Turbo Boost & Suhu Mesin) otomatis tampil saat terhubung"
+    "Dual Voltmeter Bar Gauge: Zona visual drop (10V), standby (12.6V), dan alternator charging (14.5V+)"
   ],
   "forceUpdate": false
 }

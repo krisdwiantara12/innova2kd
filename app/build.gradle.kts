@@ -9,10 +9,10 @@ android {
 
     defaultConfig {
         applicationId = "com.innova.launcher2kd"
-        minSdk = 24 // Support Android 7.0 Nougat up to Android 14+ (covers all Android Headunits)
+        minSdk = 21 // Universal: Android 5.0 Lollipop s/d Android 14+
         targetSdk = 34
-        versionCode = 6
-        versionName = "1.3.0-OEM"
+        versionCode = 7
+        versionName = "1.3.1-OEM"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -22,17 +22,11 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            isMinifyEnabled = false
             signingConfig = signingConfigs.getByName("debug")
         }
         debug {
             isMinifyEnabled = false
-            applicationIdSuffix = ".debug"
         }
     }
 
