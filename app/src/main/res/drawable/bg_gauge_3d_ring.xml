@@ -1,0 +1,56 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="220dp"
+    android:height="220dp"
+    android:viewportWidth="220"
+    android:viewportHeight="220">
+
+    <!-- Outer Bezel Ring -->
+    <path
+        android:fillColor="#151C28"
+        android:strokeColor="#2E3C52"
+        android:strokeWidth="2"
+        android:pathData="M110,110m-105,0a105,105 0 1,1 210,0a105,105 0 1,1 -210,0" />
+
+    <!-- Outer Glow Track -->
+    <path
+        android:strokeColor="#1F2A3D"
+        android:strokeWidth="6"
+        android:strokeLineCap="round"
+        android:pathData="M35,165 A90,90 0 1,1 185,165" />
+
+    <!-- Active Neon Arc (Primary Accent) -->
+    <path
+        android:strokeColor="#FF9E1B"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:pathData="M35,165 A90,90 0 0,1 110,20" />
+
+    <!-- Inner Metallic Recess -->
+    <path
+        android:fillColor="#0C0F17"
+        android:strokeColor="#3A4B66"
+        android:strokeWidth="1.5"
+        android:pathData="M110,110m-75,0a75,75 0 1,1 150,0a75,75 0 1,1 -150,0" />
+
+    <!-- Radial Tick Marks -->
+    <path
+        android:strokeColor="#526482"
+        android:strokeWidth="2"
+        android:pathData="M110,15 L110,24" />
+    <path
+        android:strokeColor="#526482"
+        android:strokeWidth="2"
+        android:pathData="M177,43 L171,49" />
+    <path
+        android:strokeColor="#526482"
+        android:strokeWidth="2"
+        android:pathData="M205,110 L196,110" />
+    <path
+        android:strokeColor="#526482"
+        android:strokeWidth="2"
+        android:pathData="M15,110 L24,110" />
+    <path
+        android:strokeColor="#526482"
+        android:strokeWidth="2"
+        android:pathData="M43,43 L49,49" />
+</vector>

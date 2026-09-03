@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Background & Carbon Surface -->
+    <color name="bg_obsidian">#0B0E14</color>
+    <color name="bg_card">#131822</color>
+    <color name="bg_card_secondary">#1B2230</color>
+    <color name="border_subtle">#263244</color>
+
+    <!-- Theme Accents -->
+    <!-- 1. Innova Classic Amber (Default - matches 2009 analog dials) -->
+    <color name="accent_amber">#FF8C00</color>
+    <color name="accent_amber_bright">#FFA726</color>
+    <color name="accent_amber_glow">#33FF8C00</color>
+
+    <!-- 2. Modern Cyber Cyan -->
+    <color name="accent_cyan">#00D2FF</color>
+    <color name="accent_cyan_bright">#33E1FF</color>
+
+    <!-- 3. Monochrome Silver -->
+    <color name="accent_silver">#E2E8F0</color>
+    <color name="accent_silver_dim">#94A3B8</color>
+
+    <!-- Status Colors -->
+    <color name="status_green">#10B981</color>
+    <color name="status_warning">#F59E0B</color>
+    <color name="status_danger">#EF4444</color>
+
+    <!-- Typography -->
+    <color name="text_primary">#F8FAFC</color>
+    <color name="text_secondary">#94A3B8</color>
+    <color name="text_dim">#64748B</color>
+    <color name="text_inverse">#0B0E14</color>
+
+    <!-- Overlay & Dimmers -->
+    <color name="overlay_black_90">#E6000000</color>
+    <color name="overlay_black_100">#FF000000</color>
+</resources>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Innova 2KD Co-Pilot</string>
+    <string name="speed_unit">KM/H</string>
+    <string name="speed_limit_label">MAX: %1$d KM/H</string>
+    <string name="altitude_format">%1$d MDPL</string>
+    <string name="heading_format">%1$s (%2$d°)</string>
+
+    <!-- Status Bar -->
+    <string name="gps_locked">GPS: TERKUNCI</string>
+    <string name="gps_searching">GPS: MENCARI...</string>
+    <string name="voltage_format">AKI: %1$.1fV</string>
+    <string name="odometer_format">ODO: %1$,d KM</string>
+    <string name="screen_off">MATIKAN LAYAR</string>
+
+    <!-- Context Cards -->
+    <string name="tab_service">SERVIS 2KD</string>
+    <string name="tab_trip">TRIP &amp; SOLAR</string>
+    <string name="tab_media">MUSIK FLASHDISK</string>
+    
+    <string name="oil_service_label">Oli Mesin (5.000 km)</string>
+    <string name="fuel_filter_label">Filter Solar (10.000 km)</string>
+    <string name="engine_hours_label">Jam Kerja Mesin (ACC)</string>
+    <string name="cranking_voltage_label">Voltase Starter Terakhir</string>
+
+    <string name="trip_distance_label">Jarak Sesi Ini</string>
+    <string name="trip_duration_label">Durasi Berkendara</string>
+    <string name="solar_est_label">Est. Konsumsi Solar</string>
+
+    <!-- Shortcuts -->
+    <string name="shortcut_maps">Peta &amp; Navigasi</string>
+    <string name="shortcut_music">Spotify / Musik</string>
+    <string name="shortcut_radio">Radio FM</string>
+    <string name="btn_all_apps">::: SEMUA APLIKASI :::</string>
+
+    <!-- Bottom Bar Controls -->
+    <string name="volume_label">Volume</string>
+    <string name="btn_mute">MUTE</string>
+    <string name="btn_audio_dsp">AUDIO DSP</string>
+    <string name="btn_fuse_guide">SEKRING 2KD</string>
+    <string name="btn_settings">PENGATURAN</string>
+
+    <!-- Audio Dialog -->
+    <string name="audio_dsp_title">OEM DSP &amp; Acoustic Suite</string>
+    <string name="eq_preset_clarity">Innova Diesel Clarity</string>
+    <string name="eq_preset_bass">Deep Bass Punch</string>
+    <string name="eq_preset_vocal">Acoustic Vocal</string>
+    <string name="eq_preset_flat">Flat Audiophile</string>
+    <string name="fader_driver_focus">Fokus Sopir</string>
+    <string name="fader_all_passenger">Semua Penumpang</string>
+    <string name="fader_front_only">Hanya Depan</string>
+    <string name="svc_title">Speed-Compensated Volume (SVC)</string>
+
+    <!-- Fuse Box Dialog -->
+    <string name="fuse_box_title">Panduan Sekring Innova 2KD (2004-2015)</string>
+    <string name="fuse_engine_bay">Ruang Mesin (Depan Aki)</string>
+    <string name="fuse_cabin">Kabin (Bawah Setir Kanan)</string>
+
+    <!-- Settings Dialog -->
+    <string name="settings_title">Pengaturan Launcher</string>
+    <string name="setting_theme">Tema Warna Kokpit</string>
+    <string name="setting_speed_limit">Batas Peringatan Kecepatan</string>
+    <string name="setting_calibrate_odo">Kalibrasi Odometer Asli</string>
+    <string name="btn_save">SIMPAN</string>
+    <string name="btn_close">TUTUP</string>
+</resources>

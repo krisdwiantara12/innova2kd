@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Innova 2KD Co-Pilot Launcher - Headunit Simulator</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Chakra+Petch:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body class="theme-amber">
+
+  <!-- Outer Bezel Container (Simulating Car Headunit 16:9 Landscape) -->
+  <div class="headunit-frame">
+    
+    <!-- MAIN COCKPIT SCREEN (1024x600 Ratio) -->
+    <main class="cockpit-screen" id="cockpitScreen">
+      
+      <!-- TOP STATUS BAR -->
+      <header class="top-bar">
+        <div class="status-indicator">
+          <span class="dot-green" id="gpsIndicator"></span>
+          <span class="status-text" id="gpsStatusText">GPS: TERKUNCI (9 Sat)</span>
+        </div>
+        <div class="divider-v"></div>
+        <div class="status-telemetry" id="batteryText">AKI: 13.8V</div>
+        <div class="divider-v"></div>
+        <div class="status-telemetry" id="odoText">ODO: 142.350 KM</div>
+        <div class="spacer"></div>
+        <!-- CENTER EMBLEM: CUSTOM COCKPIT BRANDING ("SANEPO") -->
+        <div class="cockpit-brand-badge" id="cockpitBrandBadge">✦ SANEPO ✦</div>
+        <div class="spacer"></div>
+        <div class="clock-display" id="clockDisplay">12:45</div>
+        <div class="divider-v"></div>
+        <button class="btn-screen-off" id="btnScreenOff">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M13,3h-2v10h2V3zm4.83,2.17l-1.42,1.42C17.99,7.86 19,9.81 19,12c0,3.87 -3.13,7 -7,7s-7,-3.13 -7,-7c0,-2.19 1.01,-4.14 2.58,-5.42L6.17,5.17C4.23,6.82 3,9.26 3,12c0,4.97 4.03,9 9,9s9,-4.03 9,-9c0,-2.74 -1.23,-5.18 -3.17,-6.83z"/>
+          </svg>
+          <span>PADAMKAN</span>
+        </button>
+      </header>
+
+      <!-- COCKPIT BODY (3 Main Columns) -->
+      <section class="cockpit-body">
+        
+        <!-- LEFT COLUMN: 3D SPEEDOMETER & HEADING -->
+        <div class="card-cockpit card-speedometer" id="speedCard">
+          <div class="gauge-3d-ring">
+            <div class="gauge-glow-arc"></div>
+            <div class="speed-main">
+              <span class="speed-number" id="speedValue">85</span>
+              <span class="speed-unit">KM/H</span>
+            </div>
+            <div class="speed-limit-badge" id="speedLimitBadge">
+              <span id="speedLimitText">BATAS: 100 KM/H</span>
+            </div>
+          </div>
+
+          <div class="telemetry-sub">
+            <div class="sub-item" id="headingText">350° UTARA</div>
+            <div class="sub-divider"></div>
+            <div class="sub-item" id="altText">420 MDPL</div>
+          </div>
+
+          <!-- Interactive Test Accelerator Slider for Demo -->
+          <div class="speed-sim-control">
+            <label>Gas Simulator:</label>
+            <input type="range" id="speedSlider" min="0" max="160" value="85">
+          </div>
+        </div>
+
+        <!-- CENTER COLUMN: CONTEXT-AWARE CARD -->
+        <div class="card-cockpit card-center">
+          <!-- Tab Navigation -->
+          <div class="tab-pills">
+            <button class="tab-btn active" id="tabBtnService">SERVIS 2KD</button>
+            <button class="tab-btn" id="tabBtnTrip">TRIP & SOLAR</button>
+            <button class="tab-btn" id="tabBtnMedia">FLASHDISK</button>
+          </div>
+
+          <!-- TAB 1: SERVIS 2KD -->
+          <div class="tab-content active" id="tabContentService">
+            <div class="service-row">
+              <div class="service-label">
+                <span>Oli Mesin 2KD (5.000 km)</span>
+                <span class="countdown green" id="oilCountdown">3.200 KM lagi</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill fill-green" style="width: 64%;"></div>
+              </div>
+            </div>
+
+            <div class="service-row">
+              <div class="service-label">
+                <span>Filter Solar (Biosolar B35)</span>
+                <span class="countdown amber" id="filterCountdown">7.400 KM lagi</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill fill-amber" style="width: 74%;"></div>
+              </div>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-box">
+                <span class="stat-title">Jam Kerja Mesin</span>
+                <span class="stat-val" id="hoursVal">142 Jam</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-title">Starter Voltage</span>
+                <span class="stat-val green" id="crankVal">10.8V (Sehat)</span>
+              </div>
+            </div>
+
+            <button class="btn-reset-service" id="btnResetService">RESET SERVIS (BENGKEL)</button>
+          </div>
+
+          <!-- TAB 2: TRIP & SOLAR -->
+          <div class="tab-content" id="tabContentTrip">
+            <div class="trip-stat-main">
+              <span class="trip-val" id="tripDistVal">45.2</span>
+              <span class="trip-unit">KM</span>
+            </div>
+            <div class="trip-subgrid">
+              <div class="trip-item">
+                <span class="ti-label">Waktu Jalan</span>
+                <span class="ti-val" id="tripDurationVal">01:24:10</span>
+              </div>
+              <div class="trip-item">
+                <span class="ti-label">Est. Konsumsi Solar</span>
+                <span class="ti-val" id="tripSolarVal">~ 4.1 Liter</span>
+              </div>
+              <div class="trip-item">
+                <span class="ti-label">Rata-rata 2KD</span>
+                <span class="ti-val">11.0 km/L</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: MEDIA FLASHDISK -->
+          <div class="tab-content" id="tabContentMedia">
+            <div class="media-art-placeholder">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12,3v10.55c-0.59,-0.34 -1.27,-0.55 -2,-0.55 -2.21,0 -4,1.79 -4,4s1.79,4 4,4 4,-1.79 4,-4V7h4V3h-6z"/>
+              </svg>
+            </div>
+            <div class="media-meta">
+              <span class="media-title" id="mediaTitle">Innova Diesel Touring Track.mp3</span>
+              <span class="media-artist" id="mediaArtist">USB Flashdisk (Laci Dashboard)</span>
+            </div>
+            <div class="media-controls">
+              <button class="btn-media-ctrl">⏮</button>
+              <button class="btn-media-play" id="btnPlayPause">⏸</button>
+              <button class="btn-media-ctrl">⏭</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: 3 SHORTCUTS + ALL APPS -->
+        <div class="card-cockpit card-shortcuts">
+          <!-- Shortcut 1 -->
+          <div class="shortcut-btn" id="scBtn1" title="Klik untuk buka, tahan untuk ganti">
+            <div class="sc-icon icon-maps">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12,2L4.5,20.29l0.71,0.71L12,18l6.79,3 0.71,-0.71z"/>
+              </svg>
+            </div>
+            <span class="sc-label" id="scLabel1">GOOGLE MAPS</span>
+          </div>
+
+          <!-- Shortcut 2 -->
+          <div class="shortcut-btn" id="scBtn2" title="Klik untuk buka, tahan untuk ganti">
+            <div class="sc-icon icon-music">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12,3v10.55c-0.59,-0.34 -1.27,-0.55 -2,-0.55 -2.21,0 -4,1.79 -4,4s1.79,4 4,4 4,-1.79 4,-4V7h4V3h-6z"/>
+              </svg>
+            </div>
+            <span class="sc-label" id="scLabel2">SPOTIFY / MUSIK</span>
+          </div>
+
+          <!-- Shortcut 3 -->
+          <div class="shortcut-btn" id="scBtn3" title="Klik untuk buka, tahan untuk ganti">
+            <div class="sc-icon icon-radio">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3.24,6.15C2.51,6.43 2,7.17 2,8v12c0,1.1 0.9,2 2,2h16c1.1,0 2,-0.9 2,-2V8c0,-1.1 -0.9,-2 -2,-2H8.3l8.26,-3.34L15.88,1 3.24,6.15zM7,20c-1.66,0 -3,-1.34 -3,-3s1.34,-3 3,-3 3,1.34 3,3 -1.34,3 -3,3zm13,-8h-2v-2h-2v2H4V8h16v4z"/>
+              </svg>
+            </div>
+            <span class="sc-label" id="scLabel3">RADIO FM</span>
+          </div>
+
+          <!-- All Apps Button -->
+          <div class="btn-all-apps" id="btnAllApps">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M4,8h4V4H4v4zm6,12h4v-4h-4v4zm-6,0h4v-4H4v4zm0,-6h4v-4H4v4zm6,0h4v-4h-4v4zm6,-10v4h4V4h-4zm-6,4h4V4h-4v4zm6,6h4v-4h-4v4zm0,6h4v-4h-4v4z"/>
+            </svg>
+            <span>::: SEMUA APLIKASI :::</span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- BOTTOM CONTROL BAR -->
+      <footer class="bottom-bar">
+        <div class="volume-section">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3,9v6h4l5,5V4L7,9H3zm13.5,3c0,-1.77 -1.02,-3.29 -2.5,-4.03v8.05c1.48,-0.73 2.5,-2.25 2.5,-4.02z"/>
+          </svg>
+          <input type="range" class="vol-slider" id="volSlider" min="0" max="15" value="9">
+          <button class="btn-subtle" id="btnMute">MUTE</button>
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="action-buttons">
+          <button class="btn-action" id="btnAudioModal">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M10,18h4v-2h-4v2zM3,6v2h18V6H3zm3,7h12v-2H6v2z"/>
+            </svg>
+            <span>AUDIO DSP</span>
+          </button>
+
+          <button class="btn-action" id="btnFuseModal">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19,3H5C3.9,3 3,3.9 3,5v14c0,1.1 0.9,2 2,2h14c1.1,0 2,-0.9 2,-2V5C21,3.9 20.1,3 19,3zM7,7h2v10H7V7zm4,0h2v10h-2V7zm4,0h2v10h-2V7z"/>
+            </svg>
+            <span>SEKRING 2KD</span>
+          </button>
+
+          <button class="btn-action" id="btnSettingsModal">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19.14,12.94c0.04,-0.3 0.06,-0.61 0.06,-0.94 0,-0.32 -0.02,-0.64 -0.07,-0.94l2.03,-1.58c0.18,-0.14 0.23,-0.41 0.12,-0.61l-1.92,-3.32c-0.12,-0.22 -0.37,-0.29 -0.59,-0.22l-2.39,0.96c-0.5,-0.38 -1.03,-0.7 -1.62,-0.94L14.4,2.81c-0.04,-0.24 -0.24,-0.41 -0.48,-0.41h-3.84c-0.24,0 -0.43,0.17 -0.47,0.41L9.25,5.35C8.66,5.59 8.12,5.92 7.63,6.29L5.24,5.33c-0.22,-0.08 -0.47,0 -0.59,0.22L2.74,8.87c-0.12,0.21 -0.08,0.47 0.12,0.61l2.03,1.58c-0.05,0.3 -0.09,0.63 -0.09,0.94s0.02,0.64 0.07,0.94l-2.03,1.58c-0.18,0.14 -0.23,0.41 -0.12,0.61l1.92,3.32c0.12,0.22 0.37,0.29 0.59,0.22l2.39,-0.96c0.5,0.38 1.03,0.7 1.62,0.94l0.36,2.54c0.05,0.24 0.24,0.41 0.48,0.41h3.84c0.24,0 0.44,-0.17 0.47,-0.41l0.36,-2.54c0.59,-0.24 1.13,-0.56 1.62,-0.94l2.39,0.96c0.22,0.08 0.47,0 0.59,-0.22l1.92,-3.32c0.12,-0.22 0.07,-0.47 -0.12,-0.61l-2.01,-1.58zM12,15.6c-1.98,0 -3.6,-1.62 -3.6,-3.6s1.62,-3.6 3.6,-3.6 3.6,1.62 3.6,3.6 -1.62,3.6 -3.6,3.6z"/>
+            </svg>
+            <span>PENGATURAN</span>
+          </button>
+        </div>
+      </footer>
+
+      <!-- PURE BLACK SCREEN OFF OVERLAY -->
+      <div class="screen-off-overlay" id="screenOffOverlay">
+        <span class="wake-hint">Sentuh Layar di Mana Saja untuk Menyalakan</span>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. ALL APPS DRAWER MODAL (4x2 Grid) -->
+  <div class="modal-backdrop" id="modalApps">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="modal-title">SEMUA APLIKASI HEADUNIT</span>
+        <button class="btn-close" id="btnCloseApps">&times;</button>
+      </div>
+      <div class="apps-grid" id="appsGridContainer">
+        <!-- Injected via JS: Google Maps, Waze, Spotify, YouTube Music, Radio FM, Bluetooth Audio, File Manager, Setting Mobil -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. AUDIO DSP MODAL -->
+  <div class="modal-backdrop" id="modalAudio">
+    <div class="modal-card modal-wide">
+      <div class="modal-header">
+        <span class="modal-title">OEM DSP &amp; ACOUSTIC SUITE</span>
+        <button class="btn-close" id="btnCloseAudio">&times;</button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Presets -->
+        <div class="dsp-section">
+          <label class="dsp-title">Preset Akustik 2KD:</label>
+          <div class="preset-buttons">
+            <button class="btn-preset active" id="btnPresetClarity">INNOVA DIESEL CLARITY</button>
+            <button class="btn-preset" id="btnPresetBass">DEEP BASS PUNCH</button>
+            <button class="btn-preset" id="btnPresetVocal">VOCAL CLARITY</button>
+            <button class="btn-preset" id="btnPresetFlat">FLAT AUDIOPHILE</button>
+          </div>
+        </div>
+
+        <!-- 10-Band EQ Sliders -->
+        <div class="dsp-section">
+          <label class="dsp-title">10-Band Graphic Equalizer:</label>
+          <div class="eq-bars">
+            <div class="eq-col"><span>+4</span><input type="range" min="-12" max="12" value="2" class="v-slider"><span>31Hz</span></div>
+            <div class="eq-col"><span>+6</span><input type="range" min="-12" max="12" value="6" class="v-slider"><span>62Hz</span></div>
+            <div class="eq-col"><span>+3</span><input type="range" min="-12" max="12" value="3" class="v-slider"><span>125Hz</span></div>
+            <div class="eq-col"><span>0</span><input type="range" min="-12" max="12" value="0" class="v-slider"><span>250Hz</span></div>
+            <div class="eq-col"><span>+1</span><input type="range" min="-12" max="12" value="1" class="v-slider"><span>500Hz</span></div>
+            <div class="eq-col"><span>+5</span><input type="range" min="-12" max="12" value="5" class="v-slider"><span>1kHz</span></div>
+            <div class="eq-col"><span>+6</span><input type="range" min="-12" max="12" value="6" class="v-slider"><span>2kHz</span></div>
+            <div class="eq-col"><span>+4</span><input type="range" min="-12" max="12" value="4" class="v-slider"><span>4kHz</span></div>
+            <div class="eq-col"><span>+2</span><input type="range" min="-12" max="12" value="2" class="v-slider"><span>8kHz</span></div>
+            <div class="eq-col"><span>+3</span><input type="range" min="-12" max="12" value="3" class="v-slider"><span>16kHz</span></div>
+          </div>
+        </div>
+
+        <!-- Cabin Sound Stage -->
+        <div class="dsp-section">
+          <label class="dsp-title">Kabin Sound Stage (Innova 3 Baris):</label>
+          <div class="stage-buttons">
+            <button class="btn-stage active" id="stageDriver">🎯 FOKUS SOPIR (FR)</button>
+            <button class="btn-stage" id="stageAll">👨‍👩‍👧‍👦 SEMUA PENUMPANG (3 BARIS)</button>
+            <button class="btn-stage" id="stageFront">🔇 HANYA BARIS DEPAN</button>
+          </div>
+        </div>
+
+        <!-- SVC Switch -->
+        <div class="svc-box">
+          <div>
+            <div class="svc-name">Speed-Compensated Volume (SVC)</div>
+            <div class="svc-desc">Otomatis menaikkan volume di kecepatan tol untuk redam deru mesin 2KD.</div>
+          </div>
+          <input type="checkbox" id="chkSvc" checked>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. FUSE BOX MODAL -->
+  <div class="modal-backdrop" id="modalFuse">
+    <div class="modal-card modal-wide">
+      <div class="modal-header">
+        <span class="modal-title">PANDUAN SEKRING DARURAT INNOVA 2KD</span>
+        <button class="btn-close" id="btnCloseFuse">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="fuse-tabs">
+          <button class="fuse-tab-btn active" id="fuseTabEngine">RUANG MESIN (DEPAN AKI)</button>
+          <button class="fuse-tab-btn" id="fuseTabCabin">KABIN (BAWAH SETIR)</button>
+        </div>
+        <div class="fuse-table-wrapper">
+          <table class="fuse-table" id="fuseTable">
+            <thead>
+              <tr>
+                <th>KODE</th>
+                <th>AMPERE</th>
+                <th>SISTEM YANG DILINDUNGI</th>
+              </tr>
+            </thead>
+            <tbody id="fuseTableBody">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. SETTINGS MODAL -->
+  <div class="modal-backdrop" id="modalSettings">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="modal-title">PENGATURAN LAUNCHER</span>
+        <button class="btn-close" id="btnCloseSettings">&times;</button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="setting-item">
+          <label>Nama Kendaraan / Branding Kokpit:</label>
+          <input type="text" id="settingBrandInput" value="SANEPO" class="input-text" placeholder="Contoh: SANEPO">
+        </div>
+
+        <div class="setting-item">
+          <label>Warna Aksen Kokpit:</label>
+          <div class="theme-picker">
+            <button class="theme-btn amber active" data-theme="theme-amber">Innova Amber</button>
+            <button class="theme-btn cyan" data-theme="theme-cyan">Cyber Cyan</button>
+            <button class="theme-btn silver" data-theme="theme-silver">Monochrome</button>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <label id="lblSettingSpeedLimit">Batas Peringatan Kecepatan (Tol): 100 KM/H</label>
+          <input type="range" id="settingSpeedLimit" min="80" max="140" value="100" class="vol-slider">
+        </div>
+
+        <div class="setting-item">
+          <label>Kalibrasi Odometer Asli Mobil (KM):</label>
+          <input type="number" id="settingOdoInput" value="142350" class="input-text">
+        </div>
+
+        <div class="setting-item" style="border-top: 1px solid var(--border-subtle); padding-top: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-weight: bold; font-size: 11px; color: var(--text-primary);">Versi Terpasang: v1.1.0-OEM</div>
+              <div style="font-size: 10px; color: var(--text-dim);">Server: github.com/krisdwiantara12/innova2kd</div>
+            </div>
+            <button id="btnSimCheckUpdate" style="background: var(--accent-primary); color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 10px; cursor: pointer;">🔄 CEK UPDATE</button>
+          </div>
+          <div id="simUpdateFeedback" style="font-size: 10px; color: var(--text-secondary); margin-top: 6px;"></div>
+        </div>
+
+        <button class="btn-save-settings" id="btnSaveSettings">SIMPAN PENGATURAN</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "versionCode": 3,
+  "versionName": "1.1.0-OEM",
+  "minAndroidVersion": 24,
+  "releaseDate": "2026-09-03",
+  "apkUrl": "https://github.com/krisdwiantara12/innova2kd/releases/download/v1.1.0/Innova2KD_CoPilot_v1.1.0.apk",
+  "changelog": [
+    "Perombakan desain total 3D Cockpit futuristik, modern & profesional",
+    "Penyematan emblem custom branding kokpit (Default: SANEPO)",
+    "Fitur kustomisasi shortcut aplikasi langsung di layar via App Picker Dialog",
+    "Trip Computer presisi: Jarak tempuh, durasi menyala, & kecepatan rata-rata",
+    "Kompas derajat presisi (misal: 315° NW) & altimeter satelit MDPL",
+    "Diagnostik voltase riil aki 12V & status pengisian alternator",
+    "Master volume slider dengan tombol instant mute",
+    "Perbaikan integrasi OTA auto-update via GitHub"
+  ],
+  "forceUpdate": false
+}
