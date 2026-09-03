@@ -21,11 +21,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.innova.launcher2kd.audio.AudioDspSuite
-import com.innova.launcher2kd.view.VoltmeterBarView
 import com.innova.launcher2kd.service.AutoDimmer
 import com.innova.launcher2kd.service.BatterySentinel
 import com.innova.launcher2kd.service.CarHardwareSentinel
+import com.innova.launcher2kd.service.GForceManager
 import com.innova.launcher2kd.service.GpsSpeedManager
+import com.innova.launcher2kd.service.InclinometerManager
 import com.innova.launcher2kd.service.MaintenanceManager
 import com.innova.launcher2kd.service.Obd2Manager
 import com.innova.launcher2kd.service.PerformanceTimer
@@ -36,9 +37,12 @@ import com.innova.launcher2kd.ui.AppDrawerDialog
 import com.innova.launcher2kd.ui.AppPickerDialog
 import com.innova.launcher2kd.ui.AudioDialog
 import com.innova.launcher2kd.ui.FuseBoxDialog
+import com.innova.launcher2kd.ui.HardwareHubDialog
 import com.innova.launcher2kd.ui.Obd2Dialog
 import com.innova.launcher2kd.ui.SettingsDialog
 import com.innova.launcher2kd.ui.UpdateDialog
+import com.innova.launcher2kd.view.InclinometerView
+import com.innova.launcher2kd.view.VoltmeterBarView
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -61,6 +65,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var weatherManager: WeatherManager
     private lateinit var carHardwareSentinel: CarHardwareSentinel
     private lateinit var performanceTimer: PerformanceTimer
+    private lateinit var inclinometerManager: InclinometerManager
+    private lateinit var gForceManager: GForceManager
 
     // UI Views - Top Bar
     private lateinit var tvGpsStatus: TextView
@@ -107,8 +113,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvDragRecord: TextView
     private lateinit var btnResetDrag: View
 
+    // UI Views - Center Additions (Inclinometer, G-Force, T-Belt)
+    private lateinit var vInclinometer: InclinometerView
+    private lateinit var tvGForceHUD: TextView
+    private lateinit var tvServiceTbeltKm: TextView
+    private lateinit var btnResetGForce: View
+
     // UI Views - Bottom Bar Additions
     private lateinit var btnPhoneBT: View
+    private lateinit var btnHardwareHub: View
+
+    // UI Views - Stealth Night HUD Clock
+    private lateinit var tvNightClock: TextView
 
     // UI Views - Right (3D App Shortcuts)
     private lateinit var btnShortcut1: View
@@ -293,6 +309,20 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // 5. Inclinometer 3D (Pitch & Roll Angles)
+        inclinometerManager = InclinometerManager(this) { pitch, roll, isWarning ->
+            runOnUiThread {
+                vInclinometer.setAngles(pitch, roll, isWarning)
+            }
+        }
+
+        // 6. G-Force Telemetry (Acceleration & Lateral Cornering)
+        gForceManager = GForceManager(this) { _, _, totalG, maxG ->
+            runOnUiThread {
+                tvGForceHUD.text = String.format(Locale.US, "G-FORCE: %.2fG (MAX: %.2fG)", totalG, maxG)
+            }
+        }
+
         // OBD2 Bluetooth Manager (ELM327 for 2KD-FTV)
         obd2Manager = Obd2Manager(
             this,
@@ -469,6 +499,12 @@ class MainActivity : AppCompatActivity() {
         tvDragRecord = findViewById(R.id.tvDragRecord)
         btnResetDrag = findViewById(R.id.btnResetDrag)
 
+        // Inclinometer, G-Force, T-Belt
+        vInclinometer = findViewById(R.id.vInclinometer)
+        tvGForceHUD = findViewById(R.id.tvGForceHUD)
+        tvServiceTbeltKm = findViewById(R.id.tvServiceTbeltKm)
+        btnResetGForce = findViewById(R.id.btnResetGForce)
+
         // Right Shortcuts
         btnShortcut1 = findViewById(R.id.btnShortcut1)
         tvName1 = findViewById(R.id.tvName1)
@@ -491,10 +527,12 @@ class MainActivity : AppCompatActivity() {
         sbVolume = findViewById(R.id.sbVolume)
         btnMute = findViewById(R.id.btnMute)
         btnPhoneBT = findViewById(R.id.btnPhoneBT)
+        btnHardwareHub = findViewById(R.id.btnHardwareHub)
         btnOpenAudio = findViewById(R.id.btnOpenAudio)
         btnOpenFuse = findViewById(R.id.btnOpenFuse)
         btnOpenSettings = findViewById(R.id.btnOpenSettings)
         screenOffOverlay = findViewById(R.id.screenOffOverlay)
+        tvNightClock = findViewById(R.id.tvNightClock)
 
         // Listeners for native hardware features
         btnVoiceAssistant.setOnClickListener { carHardwareSentinel.launchVoiceAssistant() }
@@ -503,6 +541,15 @@ class MainActivity : AppCompatActivity() {
         btnResetDrag.setOnClickListener {
             performanceTimer.resetRecords()
             Toast.makeText(this, "Rekor Sprint di-reset", Toast.LENGTH_SHORT).show()
+        }
+        btnResetGForce.setOnClickListener {
+            gForceManager.resetPeakG()
+            Toast.makeText(this, "Peak G-Force di-reset", Toast.LENGTH_SHORT).show()
+        }
+        btnHardwareHub.setOnClickListener {
+            HardwareHubDialog(this, carHardwareSentinel, maintenanceManager) {
+                showAudioDialog()
+            }.show()
         }
 
         // Apply initial text & brand
@@ -547,6 +594,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         tvEngineHours.text = "ACC ON: " + maintenanceManager.getEngineHoursFormatted()
+
+        val tbeltRem = maintenanceManager.getTimingBeltRemainingKm()
+        tvServiceTbeltKm.text = String.format(Locale.US, "T-BELT 2KD (150K): Sisa %,d KM", tbeltRem)
     }
 
     private fun updateTripComputerViews() {
@@ -774,7 +824,9 @@ class MainActivity : AppCompatActivity() {
     private fun startClockUpdates() {
         clockHandler.post(object : Runnable {
             override fun run() {
-                tvClock.text = clockFormat.format(Date())
+                val timeStr = clockFormat.format(Date())
+                tvClock.text = timeStr
+                tvNightClock.text = timeStr
                 updateTripComputerViews()
                 autoDimmer.checkTimeBasedDimming()
                 clockHandler.postDelayed(this, 1000)
@@ -793,6 +845,8 @@ class MainActivity : AppCompatActivity() {
         speedFusionManager.start()
         weatherManager.start()
         carHardwareSentinel.start()
+        inclinometerManager.start()
+        gForceManager.start()
         batterySentinel.start()
         autoDimmer.start()
         initVolumeSlider()
@@ -821,6 +875,8 @@ class MainActivity : AppCompatActivity() {
         speedFusionManager.stop()
         weatherManager.stop()
         carHardwareSentinel.stop()
+        inclinometerManager.stop()
+        gForceManager.stop()
         batterySentinel.stop()
         autoDimmer.stop()
         obd2Manager.stop()

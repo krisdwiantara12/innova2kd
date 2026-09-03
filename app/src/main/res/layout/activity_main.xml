@@ -813,6 +813,64 @@
                 android:textSize="9sp" />
         </LinearLayout>
 
+        <!-- 3D Inclinometer & G-Force Telemetry Card -->
+        <LinearLayout
+            android:id="@+id/llOffroadHud"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_button_shortcut"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            app:layout_constraintTop_toBottomOf="@id/llDragTimerCard">
+
+            <!-- 3D Inclinometer Pitch & Roll Gauge -->
+            <com.innova.launcher2kd.view.InclinometerView
+                android:id="@+id/vInclinometer"
+                android:layout_width="100dp"
+                android:layout_height="52dp" />
+
+            <!-- G-Force & Timing Belt Info -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvGForceHUD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="G-FORCE: 0.00G (MAX: 0.00G)"
+                    android:textColor="@color/accent_cyan"
+                    android:textSize="9sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvServiceTbeltKm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="T-BELT 2KD (150K): Sisa 92.000 KM"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="9sp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnResetGForce"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="0dp"
+                android:text="[ 0-G ]"
+                android:textColor="@color/text_dim"
+                android:textSize="9sp" />
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- ==================== RIGHT: 3D BEVELED APP DOCK ==================== -->
@@ -1058,6 +1116,34 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
+        <!-- Hardware Control Hub Button -->
+        <LinearLayout
+            android:id="@+id/btnHardwareHub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🎛️"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="KONTROL HU"
+                android:textColor="@color/accent_amber"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
         <View
             android:layout_width="1dp"
             android:layout_height="18dp"
@@ -1162,14 +1248,51 @@
 
     </LinearLayout>
 
-    <!-- ==================== STEALTH FULLSCREEN BLACKOUT ==================== -->
-    <View
+    <!-- ==================== STEALTH FULLSCREEN BLACKOUT & NIGHT HUD ==================== -->
+    <FrameLayout
         android:id="@+id/screenOffOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#000000"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="gone" />
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvNightClock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.1"
+                android:text="12:45"
+                android:textColor="@color/accent_amber"
+                android:textSize="64sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:letterSpacing="0.2"
+                android:text="✦ INNOVA 2KD DIESEL • COCKPIT HUD ✦"
+                android:textColor="@color/text_dim"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Sentuh layar di mana saja untuk menyalakan kembali"
+                android:textColor="#33FFFFFF"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -179,6 +179,65 @@ class CarHardwareSentinel(
         }
     }
 
+    fun launchAuxCamera(): Boolean {
+        val camPackages = arrayOf(
+            "com.ts.aux",
+            "com.tw.aux",
+            "com.microntek.aux",
+            "com.syu.aux",
+            "com.android.camerastream"
+        )
+        val launched = tryLaunchPackages(camPackages, "Kamera Parkir / AUX")
+        if (!launched) {
+            Toast.makeText(context, "Kamera AUX / AV-IN tidak terdeteksi", Toast.LENGTH_SHORT).show()
+        }
+        return launched
+    }
+
+    fun launchSteeringKeyLearning(): Boolean {
+        val swcPackages = arrayOf(
+            "com.ts.key",
+            "com.tw.steering",
+            "com.microntek.wheel",
+            "com.syu.car.wheel",
+            "com.android.settings"
+        )
+        val launched = tryLaunchPackages(swcPackages, "Kalibrasi Tombol Setir")
+        if (!launched) {
+            Toast.makeText(context, "Pengaturan Tombol Setir tidak terdeteksi", Toast.LENGTH_SHORT).show()
+        }
+        return launched
+    }
+
+    fun launchDvrDashcam(): Boolean {
+        val dvrPackages = arrayOf(
+            "com.ts.dvr",
+            "com.tw.dvr",
+            "com.microntek.dvr",
+            "com.syu.dvr"
+        )
+        val launched = tryLaunchPackages(dvrPackages, "USB Dashcam DVR")
+        if (!launched) {
+            Toast.makeText(context, "Aplikasi USB Dashcam tidak ditemukan", Toast.LENGTH_SHORT).show()
+        }
+        return launched
+    }
+
+    fun launchUsbVideoPlayer(): Boolean {
+        val videoPackages = arrayOf(
+            "com.ts.video",
+            "com.tw.video",
+            "com.microntek.video",
+            "com.syu.video",
+            "com.android.gallery3d"
+        )
+        val launched = tryLaunchPackages(videoPackages, "Video Flashdisk")
+        if (!launched) {
+            Toast.makeText(context, "Pemutar Video tidak ditemukan", Toast.LENGTH_SHORT).show()
+        }
+        return launched
+    }
+
     private fun tryLaunchPackages(pkgs: Array<String>, appName: String): Boolean {
         val pm = context.packageManager
         for (pkg in pkgs) {

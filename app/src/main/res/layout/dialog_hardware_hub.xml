@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_card_3d_glass"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:letterSpacing="0.1"
+            android:text="🎛️ CONCERTO HARDWARE CONTROL HUB"
+            android:textColor="@color/accent_amber"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnCloseHub"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="[ TUTUP ]"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginVertical="12dp"
+        android:background="@color/border_subtle" />
+
+    <!-- 2-Column Action Grid -->
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="3"
+        android:useDefaultMargins="true">
+
+        <!-- 1. AUX / Park Camera -->
+        <LinearLayout
+            android:id="@+id/btnHubCamera"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_button_shortcut"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📷"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kamera Parkir / AUX"
+                    android:textColor="@color/text_primary"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lihat kamera tanpa gigi R"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="9sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 2. SWC Steering Wheel Key -->
+        <LinearLayout
+            android:id="@+id/btnHubSwc"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_button_shortcut"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🛞"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kalibrasi Tombol Setir"
+                    android:textColor="@color/text_primary"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Key1/Key2 SWC Learning"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="9sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 3. USB Dashcam DVR -->
+        <LinearLayout
+            android:id="@+id/btnHubDvr"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_button_shortcut"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📹"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="USB Dashcam (DVR)"
+                    android:textColor="@color/text_primary"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rekaman perjalanan"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="9sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 4. USB Video Player -->
+        <LinearLayout
+            android:id="@+id/btnHubVideo"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_button_shortcut"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🎬"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pemutar Video Flashdisk"
+                    android:textColor="@color/text_primary"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Media USB laci dashboard"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="9sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 5. Fuel Cost Calculator -->
+        <LinearLayout
+            android:id="@+id/btnHubFuel"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_button_shortcut"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⛽"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kalkulator Solar 2KD"
+                    android:textColor="@color/text_primary"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Biosolar / Dexlite / Dex"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="9sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 6. Hardware DSP Audio -->
+        <LinearLayout
+            android:id="@+id/btnHubDsp"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_button_shortcut"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🎚️"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Equalizer DSP Chip"
+                    android:textColor="@color/text_primary"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="32-Band Time Alignment"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="9sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </GridLayout>
+
+</LinearLayout>

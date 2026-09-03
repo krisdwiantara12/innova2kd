@@ -16,6 +16,11 @@ class MaintenanceManager(context: Context) {
 
         const val INTERVAL_OIL_KM = 5000
         const val INTERVAL_FUEL_FILTER_KM = 10000
+        const val INTERVAL_TBELT_KM = 150000
+        const val INTERVAL_GEAR_OIL_KM = 40000
+
+        private const val KEY_LAST_TBELT_KM = "last_tbelt_km"
+        private const val KEY_LAST_GEAR_OIL_KM = "last_gear_oil_km"
     }
 
     private var sessionDistanceKm = 0.0
@@ -65,7 +70,31 @@ class MaintenanceManager(context: Context) {
         prefs.edit().putInt(KEY_LAST_FUEL_FILTER_KM, getTotalOdometerKm()).apply()
     }
 
-    // 4. Engine Hours
+    // 4. Timing Belt Service (150.000 KM for 2KD-FTV D-4D)
+    fun getTimingBeltRemainingKm(): Int {
+        val total = getTotalOdometerKm()
+        val lastChange = prefs.getInt(KEY_LAST_TBELT_KM, 0)
+        val driven = total - lastChange
+        return (INTERVAL_TBELT_KM - (driven % INTERVAL_TBELT_KM)).coerceAtLeast(0)
+    }
+
+    fun resetTimingBeltService() {
+        prefs.edit().putInt(KEY_LAST_TBELT_KM, getTotalOdometerKm()).apply()
+    }
+
+    // 5. Gear & Transmission Oil Service (40.000 KM)
+    fun getGearOilRemainingKm(): Int {
+        val total = getTotalOdometerKm()
+        val lastChange = prefs.getInt(KEY_LAST_GEAR_OIL_KM, total - 15000)
+        val driven = total - lastChange
+        return (INTERVAL_GEAR_OIL_KM - driven).coerceAtLeast(0)
+    }
+
+    fun resetGearOilService() {
+        prefs.edit().putInt(KEY_LAST_GEAR_OIL_KM, getTotalOdometerKm()).apply()
+    }
+
+    // 6. Engine Hours
     fun addEngineHours(seconds: Long) {
         val totalSec = prefs.getLong(KEY_ENGINE_HOURS_SECONDS, 511200L) // default 142 hours
         prefs.edit().putLong(KEY_ENGINE_HOURS_SECONDS, totalSec + seconds).apply()
@@ -78,8 +107,18 @@ class MaintenanceManager(context: Context) {
         return "$hours Jam"
     }
 
-    // 5. Fuel Consumption Estimate (Innova 2KD ~ 11.5 km/L avg)
+    // 7. Fuel Consumption & Cost (Innova 2KD ~ 11.5 km/L)
     fun getEstimatedSolarLiters(): Double {
         return sessionDistanceKm / 11.5
+    }
+
+    fun getEstimatedFuelCostRp(fuelType: String): Int {
+        val liters = getEstimatedSolarLiters()
+        val pricePerLiter = when (fuelType.uppercase()) {
+            "DEXLITE" -> 14550
+            "PERTAMINA_DEX" -> 15650
+            else -> 6800 // Biosolar B35
+        }
+        return Math.round(liters * pricePerLiter).toInt()
     }
 }
