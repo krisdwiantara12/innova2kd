@@ -21,18 +21,25 @@
       <header class="top-bar">
         <div class="status-indicator">
           <span class="dot-green" id="gpsIndicator"></span>
-          <span class="status-text" id="gpsStatusText">GPS: TERKUNCI (9 Sat)</span>
+          <span class="status-text" id="gpsStatusText">SPEED: FUSION (VSS+GPS)</span>
         </div>
+        <span class="badge-tag-red" id="handbrakeBadge" style="display:none; padding: 2px 6px; border-radius: 4px; border: 1px solid #ef4444; color: #ef4444; font-size: 10px; font-weight: bold;">(P) REM</span>
+        <span class="badge-tag-green" id="headlightBadge" style="display:none; padding: 2px 6px; border-radius: 4px; border: 1px solid #10b981; color: #10b981; font-size: 10px; font-weight: bold;">💡 LAMPU</span>
         <div class="divider-v"></div>
-        <div class="status-telemetry" id="batteryText">AKI: 13.8V</div>
+        <div class="status-telemetry" id="batteryText">AKI: 13.80V</div>
         <div class="divider-v"></div>
-        <div class="status-telemetry" id="odoText">ODO: 142.350 KM</div>
+        <div class="status-telemetry" id="weatherText" style="color: #38bdf8; font-weight: bold;">⛅ 30°C INDONESIA</div>
         <div class="spacer"></div>
         <!-- CENTER EMBLEM: CUSTOM COCKPIT BRANDING ("SANEPO") -->
         <div class="cockpit-brand-badge" id="cockpitBrandBadge">✦ SANEPO ✦</div>
         <div class="spacer"></div>
+        <div class="status-telemetry" id="odoText">ODO: 142.350 KM</div>
+        <div class="divider-v"></div>
         <div class="clock-display" id="clockDisplay">12:45</div>
         <div class="divider-v"></div>
+        <button class="btn-screen-off" id="btnVoiceAssistant" style="margin-right: 6px;" title="Asisten Suara Google">
+          <span>🎙️ SUARA</span>
+        </button>
         <button class="btn-screen-off" id="btnScreenOff">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
             <path d="M13,3h-2v10h2V3zm4.83,2.17l-1.42,1.42C17.99,7.86 19,9.81 19,12c0,3.87 -3.13,7 -7,7s-7,-3.13 -7,-7c0,-2.19 1.01,-4.14 2.58,-5.42L6.17,5.17C4.23,6.82 3,9.26 3,12c0,4.97 4.03,9 9,9s9,-4.03 9,-9c0,-2.74 -1.23,-5.18 -3.17,-6.83z"/>
@@ -141,6 +148,21 @@
                 <span class="ti-val">11.0 km/L</span>
               </div>
             </div>
+
+            <!-- Radio FM Quick Card -->
+            <div style="margin-top: 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 6px 10px; display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 11px; font-weight: bold; color: #38bdf8;">📻 RADIO FM: 102.7 MHz</span>
+              <button class="btn-subtle" style="font-size: 9px; padding: 2px 8px;" onclick="alert('Membuka Radio FM Hardware Concerto...')">BUKA FM</button>
+            </div>
+
+            <!-- Drag Performance Sprint Timer Card -->
+            <div style="margin-top: 6px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 6px 10px; display: flex; align-items: center; justify-content: space-between;">
+              <div>
+                <div style="font-size: 11px; font-weight: bold; color: #ff9e1b;">⏱️ SPRINT: SIAP DIGAS (0 KM/H)</div>
+                <div style="font-size: 10px; color: #888;">Rekor: 0-60: 5.4s | 0-100: 11.8s</div>
+              </div>
+              <button class="btn-subtle" style="font-size: 9px; padding: 2px 8px;" onclick="alert('Rekor Sprint di-reset ke 0')">↺ RESET</button>
+            </div>
           </div>
 
           <!-- TAB 3: MEDIA FLASHDISK -->
@@ -218,6 +240,13 @@
         <div class="spacer"></div>
 
         <div class="action-buttons">
+          <button class="btn-action" id="btnPhoneModal" style="color: #10b981;" onclick="alert('Membuka Bluetooth Handsfree Dialer...')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6.62,10.79c1.44,2.83 3.76,5.14 6.59,6.59l2.2,-2.2c0.27,-0.27 0.67,-0.36 1.02,-0.24 1.12,0.37 2.33,0.57 3.57,0.57 0.55,0 1,0.45 1,1V20c0,0.55 -0.45,1 -1,1 -9.39,0 -17,-7.61 -17,-17 0,-0.55 0.45,-1 1,-1h3.5c0.55,0 1,0.45 1,1 0,1.25 0.2,2.45 0.57,3.57 0.11,0.35 0.03,0.74 -0.25,1.02l-2.2,2.2z"/>
+            </svg>
+            <span>TELEPON</span>
+          </button>
+
           <button class="btn-action" id="btnAudioModal">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
               <path d="M10,18h4v-2h-4v2zM3,6v2h18V6H3zm3,7h12v-2H6v2z"/>
