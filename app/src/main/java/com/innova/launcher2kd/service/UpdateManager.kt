@@ -103,6 +103,11 @@ class UpdateManager(
 
     fun downloadAndInstall(apkUrl: String, versionName: String) {
         val fileName = "Innova2KD_v$versionName.apk"
+        val destFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName)
+        if (destFile.exists()) {
+            destFile.delete()
+        }
+
         val request = DownloadManager.Request(Uri.parse(apkUrl)).apply {
             setTitle("Mengunduh Pembaruan Innova 2KD")
             setDescription("Versi $versionName sedang diunduh...")
@@ -136,7 +141,10 @@ class UpdateManager(
 
     private fun installApk(fileName: String) {
         val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName)
-        if (!file.exists()) return
+        if (!file.exists() || file.length() < 1_000_000) {
+            // Berkas belum lengkap atau korup
+            return
+        }
 
         val apkUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
@@ -149,6 +157,14 @@ class UpdateManager(
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
+
+        // Berikan izin baca eksplisit ke package installer Android
+        val resInfoList = context.packageManager.queryIntentActivities(intent, 0)
+        for (resolveInfo in resInfoList) {
+            val pkg = resolveInfo.activityInfo.packageName
+            context.grantUriPermission(pkg, apkUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
         context.startActivity(intent)
     }
 }
