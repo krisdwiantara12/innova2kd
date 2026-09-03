@@ -62,6 +62,10 @@ class AutoDimmer(
         applyDimming(isNightTime)
     }
 
+    fun onHeadlightToggled(isOn: Boolean) {
+        applyDimming(isOn)
+    }
+
     private fun applyDimming(dim: Boolean) {
         if (!isEnabled && dim) return
         isNightDimmed = dim
