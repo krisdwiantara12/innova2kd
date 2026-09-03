@@ -548,7 +548,7 @@ class MainActivity : AppCompatActivity() {
         }
         btnHardwareHub.setOnClickListener {
             HardwareHubDialog(this, carHardwareSentinel, maintenanceManager) {
-                showAudioDialog()
+                AudioDialog(this, audioDspSuite).show()
             }.show()
         }
 
