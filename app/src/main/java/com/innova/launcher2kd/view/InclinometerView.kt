@@ -55,6 +55,7 @@ class InclinometerView @JvmOverloads constructor(
 
         val w = width.toFloat()
         val h = height.toFloat()
+        if (w <= 0f || h <= 0f) return
         val cx = w / 2f
         val cy = h / 2f
 

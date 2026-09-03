@@ -1,16 +1,15 @@
 {
-  "versionCode": 9,
-  "versionName": "1.5.0-OEM",
+  "versionCode": 10,
+  "versionName": "1.5.1-OEM",
   "minAndroidVersion": 21,
   "releaseDate": "2026-09-03",
-  "apkUrl": "https://raw.githubusercontent.com/krisdwiantara12/innova2kd/main/RELEASE_APK/Innova2KD_CoPilot_v1.5.0.apk",
+  "apkUrl": "https://raw.githubusercontent.com/krisdwiantara12/innova2kd/main/RELEASE_APK/Innova2KD_CoPilot_v1.5.1.apk",
   "changelog": [
-    "Digital Inclinometer 3D: Sudut tanjakan/turunan (Pitch °) dan kemiringan samping (Roll °) via sensor inersia internal",
-    "3D G-Force Telemetry Meter: Mengukur gaya G akselerasi, deselerasi pengereman, dan gaya lateral cornering",
-    "Concerto Hardware Control Hub: Tombol akses cepat kamera parkir/depan AUX, kalibrasi tombol setir SWC, USB Dashcam DVR, dan video USB",
-    "Kalkulator Konsumsi Solar 2KD: Rincian biaya riil per KM untuk Biosolar B35, Dexlite, dan Pertamina Dex",
-    "Extended Maintenance Sentinel: Hitung mundur T-BELT 2KD (150.000 KM) & Oli Gardan/Transmisi (40.000 KM)",
-    "Neon Night Screensaver: Jam redup minimalis bergaya kokpit mewah malam hari dengan tulisan Innova 2KD glowing"
+    "Fast Wake & Deep Sleep Engine: Responsif instan (<1 detik) saat mobil dinyalakan dari kondisi mati/sleep",
+    "Zero Battery Drain: Semua sensor (inclinometer, g-force, gps, voltase) otomatis istirahat (0% CPU) saat kontak ACC OFF",
+    "Sinkronisasi Flash Disk Anti-Hilang: commit() sinkron otomatis saat mati agar trip, odo, dan rekor sprint tidak hilang",
+    "Crash-Proof Bug Fix: Memperbaiki UninitializedPropertyAccessException pada callback izin GPS dan InclinometerView layout bounds",
+    "Prioritas Launcher OEM 1000: Menjamin launcher tetap menjadi home default utama setelah headunit reboot/restart"
   ],
   "forceUpdate": false
 }

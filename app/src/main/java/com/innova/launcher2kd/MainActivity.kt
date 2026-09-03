@@ -1,8 +1,10 @@
 package com.innova.launcher2kd
 
 import android.Manifest
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.media.AudioManager
@@ -50,7 +52,6 @@ import java.util.Locale
 class MainActivity : AppCompatActivity() {
 
     // Services & Managers
-    private lateinit var gpsSpeedManager: GpsSpeedManager
     private lateinit var batterySentinel: BatterySentinel
     private lateinit var audioDspSuite: AudioDspSuite
     private lateinit var maintenanceManager: MaintenanceManager
@@ -178,7 +179,7 @@ class MainActivity : AppCompatActivity() {
     ) { permissions ->
         if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
             permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
-            gpsSpeedManager.startListening()
+            speedFusionManager.start()
         }
     }
 
@@ -195,6 +196,7 @@ class MainActivity : AppCompatActivity() {
         setupListeners()
         startClockUpdates()
         applyCockpitTheme(activeTheme)
+        registerCarPowerReceiver()
     }
 
     private fun loadSavedConfig() {
@@ -432,13 +434,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveTripState() {
+    private fun saveTripState(synchronous: Boolean = false) {
         val elapsedSec = (System.currentTimeMillis() - tripStartTime) / 1000
-        prefs.edit()
+        val editor = prefs.edit()
             .putFloat("trip_dist_km", tripDistanceKm)
             .putLong("trip_drive_time_sec", elapsedSec)
             .putLong("trip_last_timestamp", System.currentTimeMillis())
-            .apply()
+        if (synchronous) {
+            editor.commit()
+        } else {
+            editor.apply()
+        }
     }
 
     private fun resetTripManual() {
@@ -872,14 +878,96 @@ class MainActivity : AppCompatActivity() {
             ivGaugeRing.clearAnimation()
             tvCockpitBrand.clearAnimation()
         } catch (e: Exception) {}
-        speedFusionManager.stop()
+        pauseSensorsForSleep()
         weatherManager.stop()
         carHardwareSentinel.stop()
+        obd2Manager.stop()
+        saveTripState(synchronous = true)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        // Bangun instan dari deep sleep / wake receiver
+        screenOffOverlay.visibility = View.GONE
+        resumeSensorsFromSleep()
+    }
+
+    private fun registerCarPowerReceiver() {
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_SCREEN_OFF)
+            addAction(Intent.ACTION_SCREEN_ON)
+            addAction(Intent.ACTION_SHUTDOWN)
+            addAction("android.intent.action.QUICKBOOT_POWERON")
+            addAction("com.ts.main.acc_off")
+            addAction("com.ts.main.acc_on")
+            addAction("com.tw.acc_off")
+            addAction("com.tw.acc_on")
+            addAction("com.microntek.acc_off")
+            addAction("com.microntek.acc_on")
+            addAction("com.syu.car.acc.off")
+            addAction("com.syu.car.acc.on")
+        }
+        try {
+            registerReceiver(carPowerReceiver, filter)
+        } catch (e: Exception) {}
+    }
+
+    private val carPowerReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val action = intent?.action ?: return
+            when (action) {
+                Intent.ACTION_SCREEN_OFF,
+                Intent.ACTION_SHUTDOWN,
+                "com.ts.main.acc_off",
+                "com.tw.acc_off",
+                "com.microntek.acc_off",
+                "com.syu.car.acc.off" -> {
+                    // Mobil mati / Deep Sleep: Segera simpan seluruh data dan istirahatkan sensor (0% CPU)
+                    saveTripState(synchronous = true)
+                    pauseSensorsForSleep()
+                }
+                Intent.ACTION_SCREEN_ON,
+                "android.intent.action.QUICKBOOT_POWERON",
+                "com.ts.main.acc_on",
+                "com.tw.acc_on",
+                "com.microntek.acc_on",
+                "com.syu.car.acc.on" -> {
+                    // Mobil hidup / Bangun: Segera hidupkan sensor dan responsifkan layar
+                    screenOffOverlay.visibility = View.GONE
+                    resumeSensorsFromSleep()
+                }
+            }
+        }
+    }
+
+    private fun pauseSensorsForSleep() {
+        speedFusionManager.stop()
         inclinometerManager.stop()
         gForceManager.stop()
         batterySentinel.stop()
         autoDimmer.stop()
+    }
+
+    private fun resumeSensorsFromSleep() {
+        speedFusionManager.start()
+        inclinometerManager.start()
+        gForceManager.start()
+        batterySentinel.start()
+        autoDimmer.start()
+        updateMaintenanceViews()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        clockHandler.removeCallbacksAndMessages(null)
+        try {
+            unregisterReceiver(carPowerReceiver)
+        } catch (e: Exception) {}
+        pauseSensorsForSleep()
+        weatherManager.stop()
+        carHardwareSentinel.stop()
         obd2Manager.stop()
-        saveTripState()
+        saveTripState(synchronous = true)
     }
 }
