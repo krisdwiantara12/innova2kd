@@ -212,6 +212,46 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvSpeedUnit" />
 
+        <!-- OBD2 Engine Telemetry (Turbo Boost & Coolant Temp) -->
+        <LinearLayout
+            android:id="@+id/llObdTelemetry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/bg_button_shortcut"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingVertical="4dp"
+            app:layout_constraintBottom_toTopOf="@id/llSubTelemetry">
+
+            <TextView
+                android:id="@+id/tvTurboBoost"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="TURBO: +0.0 BAR"
+                android:textColor="@color/accent_cyan"
+                android:textSize="9sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="12dp"
+                android:background="@color/border_subtle" />
+
+            <TextView
+                android:id="@+id/tvCoolantTemp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="SUHU: --°C"
+                android:textColor="@color/status_green"
+                android:textSize="9sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
         <!-- Bottom Telemetry: Compass Degree & Altitude MDPL -->
         <LinearLayout
             android:id="@+id/llSubTelemetry"
@@ -281,15 +321,53 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- OBD2 Status Clickable Pill -->
         <TextView
-            android:id="@+id/tvEngineHours"
+            android:id="@+id/tvObdStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ACC ON: 00:12:45"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_pill_accent"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="1dp"
+            android:text="⚡ OBD2: STANDBY"
             android:textColor="@color/text_dim"
-            android:textSize="10sp"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/tvCardHeader"
+            app:layout_constraintStart_toEndOf="@id/tvCardHeader"
+            app:layout_constraintTop_toTopOf="@id/tvCardHeader" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tvEngineHours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ACC ON: 00:12:45"
+                android:textColor="@color/text_dim"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/btnResetTrip"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginStart="4dp"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="0dp"
+                android:text="[ 🔄 RESET ]"
+                android:textColor="@color/text_secondary"
+                android:textSize="9sp" />
+        </LinearLayout>
 
         <!-- TRIP COMPUTER 3-COLUMN METRICS -->
         <LinearLayout
@@ -502,6 +580,21 @@
                 android:max="10000"
                 android:progress="9200"
                 android:progressTint="@color/accent_cyan" />
+
+            <!-- BioSolar Critical Warning (<500 KM) -->
+            <TextView
+                android:id="@+id/tvBioSolarAlert"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/bg_alert_pulse"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="3dp"
+                android:text="⚠️ PERINGATAN BIOSOLAR: Sisa &lt; 500 KM! Segera ganti filter solar bawah tangki."
+                android:textColor="@color/status_danger"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

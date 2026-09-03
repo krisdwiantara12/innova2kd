@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.Handler
@@ -19,14 +20,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.innova.launcher2kd.audio.AudioDspSuite
+import com.innova.launcher2kd.service.AutoDimmer
 import com.innova.launcher2kd.service.BatterySentinel
 import com.innova.launcher2kd.service.GpsSpeedManager
 import com.innova.launcher2kd.service.MaintenanceManager
+import com.innova.launcher2kd.service.Obd2Manager
 import com.innova.launcher2kd.service.UpdateManager
 import com.innova.launcher2kd.ui.AppDrawerDialog
 import com.innova.launcher2kd.ui.AppPickerDialog
 import com.innova.launcher2kd.ui.AudioDialog
 import com.innova.launcher2kd.ui.FuseBoxDialog
+import com.innova.launcher2kd.ui.Obd2Dialog
 import com.innova.launcher2kd.ui.SettingsDialog
 import com.innova.launcher2kd.ui.UpdateDialog
 import java.text.SimpleDateFormat
@@ -35,12 +39,14 @@ import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
-    // Services
+    // Services & Managers
     private lateinit var gpsSpeedManager: GpsSpeedManager
     private lateinit var batterySentinel: BatterySentinel
     private lateinit var audioDspSuite: AudioDspSuite
     private lateinit var maintenanceManager: MaintenanceManager
     private lateinit var updateManager: UpdateManager
+    private lateinit var obd2Manager: Obd2Manager
+    private lateinit var autoDimmer: AutoDimmer
     private lateinit var audioManager: AudioManager
     private lateinit var prefs: SharedPreferences
 
@@ -52,22 +58,27 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvClock: TextView
     private lateinit var btnScreenOff: View
 
-    // UI Views - Left (3D Speedometer Cluster)
+    // UI Views - Left (3D Speedometer Cluster & OBD2 Telemetry)
     private lateinit var tvSpeedNumber: TextView
     private lateinit var tvSpeedUnit: TextView
     private lateinit var tvSpeedLimit: TextView
+    private lateinit var tvTurboBoost: TextView
+    private lateinit var tvCoolantTemp: TextView
     private lateinit var tvHeading: TextView
     private lateinit var tvAltitude: TextView
 
     // UI Views - Center (Trip Computer & Diagnostics)
+    private lateinit var tvObdStatus: TextView
     private lateinit var tvTripDistance: TextView
     private lateinit var tvTripTime: TextView
     private lateinit var tvTripAvgSpeed: TextView
+    private lateinit var btnResetTrip: Button
     private lateinit var tvCrankingVoltage: TextView
     private lateinit var tvServiceOilKm: TextView
     private lateinit var pbServiceOil: ProgressBar
     private lateinit var tvServiceFuelKm: TextView
     private lateinit var pbServiceFuel: ProgressBar
+    private lateinit var tvBioSolarAlert: TextView
     private lateinit var tvEngineHours: TextView
 
     // UI Views - Right (3D App Shortcuts)
@@ -104,9 +115,11 @@ class MainActivity : AppCompatActivity() {
     private var pkgShortcut2 = "com.spotify.music"
     private var pkgShortcut3 = "com.android.fmradio"
     private var activeTheme = "AMBER"
+    private var isAutoDimmingEnabled = true
 
-    // Trip Computer State
+    // Persistent Trip Computer State (Rest area retention 2 hours)
     private var tripDistanceKm = 0.0f
+    private var tripDriveTimeSec = 0L
     private var tripStartTime = System.currentTimeMillis()
     private var isMuted = false
     private var preMuteVolume = 8
@@ -143,6 +156,7 @@ class MainActivity : AppCompatActivity() {
         speedLimit = prefs.getInt("speed_limit", 100)
         cockpitBrand = prefs.getString("cockpit_brand", "SANEPO") ?: "SANEPO"
         activeTheme = prefs.getString("cockpit_theme", "AMBER") ?: "AMBER"
+        isAutoDimmingEnabled = prefs.getBoolean("auto_dimming_enabled", true)
         pkgShortcut1 = prefs.getString("pkg_sc1", "com.google.android.apps.maps") ?: "com.google.android.apps.maps"
         pkgShortcut2 = prefs.getString("pkg_sc2", "com.spotify.music") ?: "com.spotify.music"
         pkgShortcut3 = prefs.getString("pkg_sc3", "com.android.fmradio") ?: "com.android.fmradio"
@@ -151,6 +165,8 @@ class MainActivity : AppCompatActivity() {
     private fun initServices() {
         maintenanceManager = MaintenanceManager(this)
         audioDspSuite = AudioDspSuite(this)
+        autoDimmer = AutoDimmer(this)
+        autoDimmer.setAutoDimmingEnabled(isAutoDimmingEnabled)
 
         // GPS Speed Manager (Precision with Altitude, Cardinal Heading, and Haversine Distance)
         gpsSpeedManager = GpsSpeedManager(
@@ -179,6 +195,7 @@ class MainActivity : AppCompatActivity() {
                 runOnUiThread {
                     tripDistanceKm += deltaKm.toFloat()
                     maintenanceManager.addDistance(deltaKm)
+                    saveTripState()
                     updateMaintenanceViews()
                     updateTripComputerViews()
                 }
@@ -210,6 +227,44 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // OBD2 Bluetooth Manager (ELM327 for 2KD-FTV)
+        obd2Manager = Obd2Manager(
+            this,
+            onDataReceived = { voltage, ect, boostBar, rpm ->
+                runOnUiThread {
+                    // Update Turbo Boost
+                    tvTurboBoost.text = String.format(Locale.US, "TURBO: +%.1f BAR", boostBar)
+
+                    // Update Coolant Temp (ECT)
+                    if (ect != -999) {
+                        tvCoolantTemp.text = "SUHU: $ect°C"
+                        if (ect >= 100) {
+                            tvCoolantTemp.setTextColor(ContextCompat.getColor(this, R.color.status_danger))
+                            Toast.makeText(this, "⚠️ OVERHEAT WARNING: Suhu mesin $ect°C!", Toast.LENGTH_SHORT).show()
+                        } else {
+                            tvCoolantTemp.setTextColor(ContextCompat.getColor(this, R.color.status_green))
+                        }
+                    }
+
+                    // Update Real Battery Voltage from OBD2 Pin 16 if valid
+                    if (voltage > 9.0f) {
+                        tvBatteryVoltage.text = String.format(Locale.US, "AKI: %.1fV", voltage)
+                    }
+                }
+            },
+            onStatusChanged = { statusText, isConnected ->
+                runOnUiThread {
+                    if (isConnected) {
+                        tvObdStatus.text = "⚡ OBD2: ONLINE"
+                        tvObdStatus.setTextColor(ContextCompat.getColor(this, R.color.status_green))
+                    } else {
+                        tvObdStatus.text = "⚡ OBD2: STANDBY"
+                        tvObdStatus.setTextColor(ContextCompat.getColor(this, R.color.text_dim))
+                    }
+                }
+            }
+        )
+
         // OTA Auto-Update Manager (Official GitHub Integration)
         updateManager = UpdateManager(
             this,
@@ -223,6 +278,46 @@ class MainActivity : AppCompatActivity() {
             }
         )
         updateManager.checkForUpdates()
+
+        // Init Persistent Trip Computer
+        initTripComputer()
+    }
+
+    private fun initTripComputer() {
+        val lastTimestamp = prefs.getLong("trip_last_timestamp", 0L)
+        val now = System.currentTimeMillis()
+        val diffHours = (now - lastTimestamp) / (1000 * 3600.0)
+
+        // Jika jeda mesin mati kurang dari 2 jam (rest area / SPBU), lanjutkan trip!
+        if (diffHours < 2.0 && lastTimestamp > 0) {
+            tripDistanceKm = prefs.getFloat("trip_dist_km", 0.0f)
+            tripDriveTimeSec = prefs.getLong("trip_drive_time_sec", 0L)
+            tripStartTime = now - (tripDriveTimeSec * 1000)
+        } else {
+            // Mulai trip baru jika mobil mati lebih dari 2 jam
+            tripDistanceKm = 0.0f
+            tripDriveTimeSec = 0L
+            tripStartTime = now
+            saveTripState()
+        }
+    }
+
+    private fun saveTripState() {
+        val elapsedSec = (System.currentTimeMillis() - tripStartTime) / 1000
+        prefs.edit()
+            .putFloat("trip_dist_km", tripDistanceKm)
+            .putLong("trip_drive_time_sec", elapsedSec)
+            .putLong("trip_last_timestamp", System.currentTimeMillis())
+            .apply()
+    }
+
+    private fun resetTripManual() {
+        tripDistanceKm = 0.0f
+        tripDriveTimeSec = 0L
+        tripStartTime = System.currentTimeMillis()
+        saveTripState()
+        updateTripComputerViews()
+        Toast.makeText(this, "Trip Computer berhasil di-reset ke 0 KM", Toast.LENGTH_SHORT).show()
     }
 
     private fun bindViews() {
@@ -234,22 +329,27 @@ class MainActivity : AppCompatActivity() {
         tvClock = findViewById(R.id.tvClock)
         btnScreenOff = findViewById(R.id.btnScreenOff)
 
-        // Left Speedometer
+        // Left Speedometer & OBD2 Telemetry
         tvSpeedNumber = findViewById(R.id.tvSpeedNumber)
         tvSpeedUnit = findViewById(R.id.tvSpeedUnit)
         tvSpeedLimit = findViewById(R.id.tvSpeedLimit)
+        tvTurboBoost = findViewById(R.id.tvTurboBoost)
+        tvCoolantTemp = findViewById(R.id.tvCoolantTemp)
         tvHeading = findViewById(R.id.tvHeading)
         tvAltitude = findViewById(R.id.tvAltitude)
 
         // Center Telemetry & Trip
+        tvObdStatus = findViewById(R.id.tvObdStatus)
         tvTripDistance = findViewById(R.id.tvTripDistance)
         tvTripTime = findViewById(R.id.tvTripTime)
         tvTripAvgSpeed = findViewById(R.id.tvTripAvgSpeed)
+        btnResetTrip = findViewById(R.id.btnResetTrip)
         tvCrankingVoltage = findViewById(R.id.tvCrankingVoltage)
         tvServiceOilKm = findViewById(R.id.tvServiceOilKm)
         pbServiceOil = findViewById(R.id.pbServiceOil)
         tvServiceFuelKm = findViewById(R.id.tvServiceFuelKm)
         pbServiceFuel = findViewById(R.id.pbServiceFuel)
+        tvBioSolarAlert = findViewById(R.id.tvBioSolarAlert)
         tvEngineHours = findViewById(R.id.tvEngineHours)
 
         // Right Shortcuts
@@ -306,6 +406,18 @@ class MainActivity : AppCompatActivity() {
         val fuelFilterRem = maintenanceManager.getFuelFilterRemainingKm()
         tvServiceFuelKm.text = "Sisa $fuelFilterRem KM"
         pbServiceFuel.progress = fuelFilterRem
+
+        // Critical BioSolar B35 Warning (<500 KM)
+        if (fuelFilterRem < 500) {
+            tvBioSolarAlert.visibility = View.VISIBLE
+            tvBioSolarAlert.text = "⚠️ KRITIS BIOSOLAR: Sisa $fuelFilterRem KM! Segera ganti filter solar bawah tangki."
+            pbServiceFuel.progressTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.status_danger))
+            tvServiceFuelKm.setTextColor(ContextCompat.getColor(this, R.color.status_danger))
+        } else {
+            tvBioSolarAlert.visibility = View.GONE
+            pbServiceFuel.progressTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.accent_cyan))
+            tvServiceFuelKm.setTextColor(ContextCompat.getColor(this, R.color.accent_cyan))
+        }
 
         tvEngineHours.text = "ACC ON: " + maintenanceManager.getEngineHoursFormatted()
     }
@@ -371,6 +483,12 @@ class MainActivity : AppCompatActivity() {
         btnShortcut2.setOnLongClickListener { openAppPickerForSlot(2); true }
         btnShortcut3.setOnLongClickListener { openAppPickerForSlot(3); true }
 
+        // Reset Trip Button
+        btnResetTrip.setOnClickListener { resetTripManual() }
+
+        // OBD2 Status Pill Click -> Open OBD2 Dialog
+        tvObdStatus.setOnClickListener { openObd2Dialog() }
+
         // All Apps Button
         btnAllApps.setOnClickListener {
             AppDrawerDialog(this).show()
@@ -386,7 +504,7 @@ class MainActivity : AppCompatActivity() {
             FuseBoxDialog(this).show()
         }
 
-        // Settings Dialog (Includes SANEPO branding editor and check update)
+        // Settings Dialog (Includes SANEPO branding editor, Auto-Dimming & OBD2)
         btnOpenSettings.setOnClickListener {
             SettingsDialog(
                 this,
@@ -394,6 +512,7 @@ class MainActivity : AppCompatActivity() {
                 updateManager,
                 speedLimit,
                 cockpitBrand,
+                isAutoDimmingEnabled,
                 onSpeedLimitChanged = { newLimit ->
                     speedLimit = newLimit
                     prefs.edit().putInt("speed_limit", speedLimit).apply()
@@ -410,6 +529,14 @@ class MainActivity : AppCompatActivity() {
                     prefs.edit().putString("cockpit_brand", cockpitBrand).apply()
                     tvCockpitBrand.text = "✦ $cockpitBrand ✦"
                     Toast.makeText(this, "Branding kokpit: $cockpitBrand", Toast.LENGTH_SHORT).show()
+                },
+                onAutoDimmingChanged = { enabled ->
+                    isAutoDimmingEnabled = enabled
+                    prefs.edit().putBoolean("auto_dimming_enabled", enabled).apply()
+                    autoDimmer.setAutoDimmingEnabled(enabled)
+                },
+                onOpenObd2Requested = {
+                    openObd2Dialog()
                 }
             ).show()
         }
@@ -445,6 +572,13 @@ class MainActivity : AppCompatActivity() {
                 isMuted = false
             }
         }
+    }
+
+    private fun openObd2Dialog() {
+        Obd2Dialog(this, obd2Manager) { selectedAddress ->
+            prefs.edit().putString("obd2_last_device", selectedAddress).apply()
+            obd2Manager.connectToDevice(selectedAddress)
+        }.show()
     }
 
     private fun openAppPickerForSlot(slot: Int) {
@@ -515,6 +649,7 @@ class MainActivity : AppCompatActivity() {
             override fun run() {
                 tvClock.text = clockFormat.format(Date())
                 updateTripComputerViews()
+                autoDimmer.checkTimeBasedDimming()
                 clockHandler.postDelayed(this, 1000)
             }
         })
@@ -529,13 +664,23 @@ class MainActivity : AppCompatActivity() {
             )
         )
         batterySentinel.start()
+        autoDimmer.start()
         initVolumeSlider()
         updateMaintenanceViews()
+
+        // Auto-reconnect OBD2 if previously paired
+        val lastObd = prefs.getString("obd2_last_device", null)
+        if (lastObd != null) {
+            obd2Manager.connectToDevice(lastObd)
+        }
     }
 
     override fun onPause() {
         super.onPause()
         batterySentinel.stop()
+        autoDimmer.stop()
+        obd2Manager.stop()
         gpsSpeedManager.stopListening()
+        saveTripState()
     }
 }

@@ -1,18 +1,16 @@
 {
-  "versionCode": 3,
-  "versionName": "1.1.0-OEM",
+  "versionCode": 4,
+  "versionName": "1.2.0-OEM",
   "minAndroidVersion": 24,
   "releaseDate": "2026-09-03",
-  "apkUrl": "https://raw.githubusercontent.com/krisdwiantara12/innova2kd/main/RELEASE_APK/Innova2KD_CoPilot_v1.1.0.apk",
+  "apkUrl": "https://raw.githubusercontent.com/krisdwiantara12/innova2kd/main/RELEASE_APK/Innova2KD_CoPilot_v1.2.0.apk",
   "changelog": [
-    "Perombakan desain total 3D Cockpit futuristik, modern & profesional",
-    "Penyematan emblem custom branding kokpit (Default: SANEPO)",
-    "Fitur kustomisasi shortcut aplikasi langsung di layar via App Picker Dialog",
-    "Trip Computer presisi: Jarak tempuh, durasi menyala, & kecepatan rata-rata",
-    "Kompas derajat presisi (misal: 315° NW) & altimeter satelit MDPL",
-    "Diagnostik voltase riil aki 12V & status pengisian alternator",
-    "Master volume slider dengan tombol instant mute",
-    "Perbaikan integrasi OTA auto-update via GitHub"
+    "Integrasi OBD2 Bluetooth (ELM327): Turbo Boost (Bar), Suhu Radiator (ECT °C), dan RPM",
+    "Pembacaan Voltase Aki Riil langsung dari Pin 16 OBD2 ECU mobil",
+    "Persistent Trip Computer cerdas (retensi 2 jam saat mati di rest area/SPBU) + tombol Reset",
+    "Smart Auto-Dimming: Peredupan otomatis layar malam hari (18:00 - 06:00)",
+    "Peringatan Dini Kritis BioSolar B35 saat filter solar tersisa < 500 KM",
+    "Desain 3D Cockpit futuristik dan custom branding SANEPO"
   ],
   "forceUpdate": false
 }

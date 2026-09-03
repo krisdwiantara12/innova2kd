@@ -12,6 +12,7 @@ import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import com.innova.launcher2kd.R
+import androidx.appcompat.widget.SwitchCompat
 import com.innova.launcher2kd.service.MaintenanceManager
 import com.innova.launcher2kd.service.UpdateManager
 
@@ -21,9 +22,12 @@ class SettingsDialog(
     private val updateManager: UpdateManager,
     private val currentSpeedLimit: Int,
     private val currentBrandName: String,
+    private val isAutoDimmingEnabled: Boolean,
     private val onSpeedLimitChanged: (Int) -> Unit,
     private val onThemeChanged: (String) -> Unit,
-    private val onBrandNameChanged: (String) -> Unit
+    private val onBrandNameChanged: (String) -> Unit,
+    private val onAutoDimmingChanged: (Boolean) -> Unit,
+    private val onOpenObd2Requested: () -> Unit
 ) : Dialog(context, R.style.DialogTheme) {
 
     private var selectedSpeedLimit = currentSpeedLimit
@@ -43,6 +47,8 @@ class SettingsDialog(
         val sbSpeedLimit = findViewById<SeekBar>(R.id.sbSpeedLimit)
         val etOdo = findViewById<EditText>(R.id.etOdometer)
         val rgTheme = findViewById<RadioGroup>(R.id.rgTheme)
+        val swAutoDim = findViewById<SwitchCompat>(R.id.swAutoDimming)
+        val btnOpenObd = findViewById<Button>(R.id.btnOpenObd2Dialog)
         val tvSettingVersionName = findViewById<TextView>(R.id.tvSettingVersionName)
         val btnCheckUpdateNow = findViewById<Button>(R.id.btnCheckUpdateNow)
         val tvUpdateStatusText = findViewById<TextView>(R.id.tvUpdateStatusText)
@@ -51,6 +57,15 @@ class SettingsDialog(
 
         // Init Brand Name
         etVehicleBrand.setText(currentBrandName)
+
+        // Init Auto-Dimming
+        swAutoDim.isChecked = isAutoDimmingEnabled
+
+        // Button Sambungkan OBD2
+        btnOpenObd.setOnClickListener {
+            dismiss()
+            onOpenObd2Requested()
+        }
 
         // Init Version Name
         tvSettingVersionName.text = "Versi Terpasang: v${updateManager.getLocalVersionName()}"
@@ -110,6 +125,9 @@ class SettingsDialog(
                 else -> "AMBER"
             }
             onThemeChanged(themeStr)
+
+            // 4. Save Auto-Dimming
+            onAutoDimmingChanged(swAutoDim.isChecked)
 
             Toast.makeText(context, "Pengaturan Berhasil Disimpan", Toast.LENGTH_SHORT).show()
             dismiss()
