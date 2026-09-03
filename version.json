@@ -3,7 +3,7 @@
   "versionName": "1.1.0-OEM",
   "minAndroidVersion": 24,
   "releaseDate": "2026-09-03",
-  "apkUrl": "https://github.com/krisdwiantara12/innova2kd/releases/download/v1.1.0/Innova2KD_CoPilot_v1.1.0.apk",
+  "apkUrl": "https://raw.githubusercontent.com/krisdwiantara12/innova2kd/main/RELEASE_APK/Innova2KD_CoPilot_v1.1.0.apk",
   "changelog": [
     "Perombakan desain total 3D Cockpit futuristik, modern & profesional",
     "Penyematan emblem custom branding kokpit (Default: SANEPO)",
