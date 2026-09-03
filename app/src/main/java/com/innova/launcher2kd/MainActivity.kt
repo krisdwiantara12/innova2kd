@@ -906,7 +906,7 @@ class MainActivity : AppCompatActivity() {
             addAction("com.syu.car.acc.on")
         }
         try {
-            registerReceiver(carPowerReceiver, filter)
+            ContextCompat.registerReceiver(this, carPowerReceiver, filter, ContextCompat.RECEIVER_EXPORTED)
         } catch (e: Exception) {}
     }
 

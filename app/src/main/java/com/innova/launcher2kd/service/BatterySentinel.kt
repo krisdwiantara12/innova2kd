@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.os.BatteryManager
 import android.os.Handler
 import android.os.Looper
+import androidx.core.content.ContextCompat
 import java.io.File
 
 /**
@@ -154,7 +155,7 @@ class BatterySentinel(
             addAction("com.forfan.action.BATTERY_VOLTAGE")
         }
         try {
-            context.registerReceiver(batteryReceiver, filter)
+            ContextCompat.registerReceiver(context, batteryReceiver, filter, ContextCompat.RECEIVER_EXPORTED)
         } catch (e: Exception) {}
 
         isPollingSysfs = true

@@ -27,6 +27,10 @@ class InclinometerManager(
     private var smoothedRoll = 0f
     private val alpha = 0.12f // Low-pass filter damping getaran diesel
 
+    private var lastPitch = Int.MIN_VALUE
+    private var lastRoll = Int.MIN_VALUE
+    private var lastSteep = false
+
     init {
         gravitySensor = sensorManager?.getDefaultSensor(Sensor.TYPE_GRAVITY)
             ?: sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
@@ -66,6 +70,14 @@ class InclinometerManager(
 
         // Peringatan jika tanjakan/turunan > 20° atau miring samping > 18°
         val isSteep = Math.abs(pitchInt) >= 20 || Math.abs(rollInt) >= 18
+
+        // Throttling dirty-check: hemat CPU & RAM di HU 2GB
+        if (pitchInt == lastPitch && rollInt == lastRoll && isSteep == lastSteep) {
+            return
+        }
+        lastPitch = pitchInt
+        lastRoll = rollInt
+        lastSteep = isSteep
 
         onInclineUpdate(pitchInt, rollInt, isSteep)
     }

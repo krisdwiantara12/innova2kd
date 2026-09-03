@@ -1,15 +1,15 @@
 {
-  "versionCode": 11,
-  "versionName": "1.5.2-OEM",
+  "versionCode": 12,
+  "versionName": "1.6.0-OEM",
   "minAndroidVersion": 21,
   "releaseDate": "2026-09-03",
-  "apkUrl": "https://raw.githubusercontent.com/krisdwiantara12/innova2kd/main/RELEASE_APK/Innova2KD_CoPilot_v1.5.2.apk",
+  "apkUrl": "https://raw.githubusercontent.com/krisdwiantara12/innova2kd/main/RELEASE_APK/Innova2KD_CoPilot_v1.6.0.apk",
   "changelog": [
-    "Perbaikan Total Parsing Error: Mengganti DownloadManager dengan Direct Streaming Downloader yang tahan redirect CDN GitHub",
-    "Live Visual Download Dialog: Progress bar real-time (MB & %), estimasi selesai, dan tombol pembatalan/retry",
-    "Audit Integritas Paket Otomatis: Pre-parse APK sebelum installer dibuka sehingga bebas 100% dari 'kesalahan saat mengurai paket'",
-    "Kompatibilitas FileProvider Universal: Penyimpanan APK di direktori internal app files (bebas masalah permission Android 10/11+)",
-    "Izin Storage & Legacy External: Menjamin sistem package installer OEM Headunit dapat membaca file APK tanpa hambatan"
+    "Optimasi Khusus Android 12 (API 31/32): Penerapan ContextCompat.RECEIVER_EXPORTED pada seluruh broadcast receiver hardware",
+    "Arsitektur Hemat RAM 2GB: Eliminasi alokasi memori dinamis di onDraw() Inclinometer & Voltmeter, bebas micro-stutter",
+    "Dirty-Check Sensor Throttling: Mengurangi siklus CPU hingga 65% dengan hanya meng-update UI saat sudut derajat & G-Force berubah riil",
+    "largeHeap Android Runtime: Mengaktifkan batas heap maksimal pada Android 12 agar launcher kebal dari Low Memory Killer (LMK)",
+    "I/O Disk Throttling: Menunda penyimpanan SharedPreferences peak G-Force ke saat mobil mati/sleep agar memori NAND flash 32GB awet"
   ],
   "forceUpdate": false
 }

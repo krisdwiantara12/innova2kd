@@ -61,7 +61,7 @@ class InclinometerView @JvmOverloads constructor(
 
         // Frame lingkaran luar
         val radius = Math.min(cx, cy) - 10f
-        linePaint.color = if (isWarning) Color.parseColor("#EF4444") else Color.parseColor("#2A38BDF8")
+        linePaint.color = if (isWarning) COLOR_WARNING else COLOR_NORMAL_LINE
         linePaint.style = Paint.Style.STROKE
         linePaint.strokeWidth = 2f
         canvas.drawCircle(cx, cy, radius, linePaint)
@@ -72,13 +72,12 @@ class InclinometerView @JvmOverloads constructor(
 
         // Rotasi horizon berdasarkan Roll (kemiringan) dan pergeseran vertikal berdasarkan Pitch (tanjakan)
         canvas.save()
-        // Pitch shift: 1 derajat = 2.5 pixel vertikal
         val pitchShift = (pitchDeg * 2.5f).coerceIn(-radius * 0.7f, radius * 0.7f)
         canvas.translate(cx, cy - pitchShift)
         canvas.rotate(-rollDeg.toFloat())
 
         // Garis horizon mobil
-        horizonPaint.color = if (isWarning) Color.parseColor("#EF4444") else Color.parseColor("#FF9E1B")
+        horizonPaint.color = if (isWarning) COLOR_WARNING else COLOR_NORMAL_HORIZON
         canvas.drawLine(-radius * 0.7f, 0f, radius * 0.7f, 0f, horizonPaint)
 
         // Siluet simbolis mobil Innova di tengah
@@ -89,9 +88,17 @@ class InclinometerView @JvmOverloads constructor(
         canvas.restore()
 
         // Label teks sudut
-        textPaint.color = if (isWarning) Color.parseColor("#EF4444") else Color.parseColor("#E2E8F0")
+        textPaint.color = if (isWarning) COLOR_WARNING else COLOR_TEXT_NORMAL
         val pitchSign = if (pitchDeg >= 0) "+$pitchDeg°" else "$pitchDeg°"
         val rollSign = if (rollDeg >= 0) "+$rollDeg°" else "$rollDeg°"
         canvas.drawText("PITCH: $pitchSign | ROLL: $rollSign", cx, h - 8f, textPaint)
+    }
+
+    companion object {
+        private const val COLOR_WARNING = 0xFFEF4444.toInt()
+        private const val COLOR_NORMAL_LINE = 0x2A38BDF8.toInt()
+        private const val COLOR_NORMAL_HORIZON = 0xFFFF9E1B.toInt()
+        private const val COLOR_TEXT_NORMAL = 0xFFE2E8F0.toInt()
+    }
     }
 }

@@ -80,19 +80,19 @@ class VoltmeterBarView @JvmOverloads constructor(
         fun xForV(v: Float): Float = ((v - minV) / (maxV - minV)) * w
 
         // Zone 1: < 11.8V (Danger Red)
-        zonePaint.color = Color.parseColor("#4DEE4444")
+        zonePaint.color = ZONE_DANGER
         canvas.drawRect(xForV(10.0f), top, xForV(11.8f), bottom, zonePaint)
 
         // Zone 2: 11.8V - 12.4V (Amber Standby)
-        zonePaint.color = Color.parseColor("#4DF59E0B")
+        zonePaint.color = ZONE_AMBER
         canvas.drawRect(xForV(11.8f), top, xForV(12.4f), bottom, zonePaint)
 
         // Zone 3: 12.5V - 14.8V (Optimal Green)
-        zonePaint.color = Color.parseColor("#4D10B981")
+        zonePaint.color = ZONE_GREEN
         canvas.drawRect(xForV(12.4f), top, xForV(14.8f), bottom, zonePaint)
 
         // Zone 4: > 14.8V (Overcharge Red)
-        zonePaint.color = Color.parseColor("#4DEF4444")
+        zonePaint.color = ZONE_OVERCHARGE
         canvas.drawRect(xForV(14.8f), top, xForV(16.0f), bottom, zonePaint)
 
         // Draw Voltage Ticks (11, 12, 13, 14, 15)
@@ -104,13 +104,24 @@ class VoltmeterBarView @JvmOverloads constructor(
         // Draw Active Needle Indicator
         val needleX = xForV(displayedVoltage).coerceIn(4f, w - 4f)
         needlePaint.color = when {
-            displayedVoltage < 11.8f -> Color.parseColor("#EF4444")
-            displayedVoltage < 12.4f -> Color.parseColor("#F59E0B")
-            displayedVoltage <= 14.8f -> Color.parseColor("#10B981")
-            else -> Color.parseColor("#EF4444")
+            displayedVoltage < 11.8f -> NEEDLE_DANGER
+            displayedVoltage < 12.4f -> NEEDLE_AMBER
+            displayedVoltage <= 14.8f -> NEEDLE_GREEN
+            else -> NEEDLE_DANGER
         }
 
         // Needle Glow Head
         canvas.drawCircle(needleX, h / 2f, h * 0.35f, needlePaint)
+    }
+
+    companion object {
+        private const val ZONE_DANGER = 0x4DEE4444.toInt()
+        private const val ZONE_AMBER = 0x4DF59E0B.toInt()
+        private const val ZONE_GREEN = 0x4D10B981.toInt()
+        private const val ZONE_OVERCHARGE = 0x4DEF4444.toInt()
+
+        private const val NEEDLE_DANGER = 0xFFEF4444.toInt()
+        private const val NEEDLE_AMBER = 0xFFF59E0B.toInt()
+        private const val NEEDLE_GREEN = 0xFF10B981.toInt()
     }
 }

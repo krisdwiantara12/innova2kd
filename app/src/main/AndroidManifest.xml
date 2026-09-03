@@ -37,6 +37,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Innova2KDLauncher"
         android:hardwareAccelerated="true"
+        android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
         tools:targetApi="34">
 

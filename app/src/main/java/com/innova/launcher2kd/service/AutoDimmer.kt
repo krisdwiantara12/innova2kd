@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import java.util.Calendar
 
 class AutoDimmer(
@@ -33,7 +34,7 @@ class AutoDimmer(
                 addAction("com.microntek.HEADLIGHT_ON")
                 addAction("com.microntek.HEADLIGHT_OFF")
             }
-            activity.registerReceiver(headlightReceiver, filter)
+            ContextCompat.registerReceiver(activity, headlightReceiver, filter, ContextCompat.RECEIVER_EXPORTED)
         } catch (e: Exception) {
             // Receiver registration fallback
         }

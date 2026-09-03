@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import androidx.core.content.ContextCompat
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -179,14 +180,14 @@ class SpeedFusionManager(
             addAction("com.microntek.speed")
         }
         try {
-            context.registerReceiver(mcuSpeedReceiver, filter)
+            ContextCompat.registerReceiver(context, mcuSpeedReceiver, filter, ContextCompat.RECEIVER_EXPORTED)
         } catch (e: Exception) {}
 
-        // Register G-Sensor
+        // Register G-Sensor (delay normal untuk efisiensi CPU pada RAM 2GB)
         try {
             val accel = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
             accel?.let {
-                sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_UI)
+                sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
             }
         } catch (e: Exception) {}
 

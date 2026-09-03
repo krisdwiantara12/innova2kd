@@ -29,6 +29,11 @@ class GForceManager(
     private var filteredLateralG = 0f
     private val filterAlpha = 0.15f
 
+    private var lastFwd = Float.MIN_VALUE
+    private var lastLat = Float.MIN_VALUE
+    private var lastTot = Float.MIN_VALUE
+    private var lastMax = Float.MIN_VALUE
+
     init {
         accelSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
             ?: sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
@@ -42,6 +47,11 @@ class GForceManager(
 
     fun stop() {
         sensorManager?.unregisterListener(this)
+        savePeakG()
+    }
+
+    private fun savePeakG() {
+        prefs.edit().putFloat("max_g_peak", maxGRecorded).apply()
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
@@ -60,19 +70,28 @@ class GForceManager(
 
         if (totalG > maxGRecorded) {
             maxGRecorded = Math.round(totalG * 100f) / 100f
-            prefs.edit().putFloat("max_g_peak", maxGRecorded).apply()
         }
 
         val roundedFwd = Math.round(filteredForwardG * 100f) / 100f
         val roundedLat = Math.round(filteredLateralG * 100f) / 100f
         val roundedTot = Math.round(totalG * 100f) / 100f
 
+        // Throttling dirty-check: hemat GC dan alokasi memori di HU RAM 2GB
+        if (roundedTot == lastTot && roundedFwd == lastFwd && roundedLat == lastLat && maxGRecorded == lastMax) {
+            return
+        }
+        lastTot = roundedTot
+        lastFwd = roundedFwd
+        lastLat = roundedLat
+        lastMax = maxGRecorded
+
         onGForceUpdate(roundedFwd, roundedLat, roundedTot, maxGRecorded)
     }
 
     fun resetPeakG() {
         maxGRecorded = 0f
-        prefs.edit().putFloat("max_g_peak", 0f).apply()
+        savePeakG()
+        lastMax = 0f
         onGForceUpdate(0f, 0f, 0f, 0f)
     }
 

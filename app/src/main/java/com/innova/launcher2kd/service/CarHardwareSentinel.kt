@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 
 /**
  * Car Hardware Sentinel
@@ -67,7 +68,7 @@ class CarHardwareSentinel(
             addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED)
         }
         try {
-            context.registerReceiver(hardwareReceiver, filter)
+            ContextCompat.registerReceiver(context, hardwareReceiver, filter, ContextCompat.RECEIVER_EXPORTED)
         } catch (e: Exception) {}
 
         // Inisialisasi awal lampu senja dari night mode Android
