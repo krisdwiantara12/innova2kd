@@ -100,5 +100,4 @@ class InclinometerView @JvmOverloads constructor(
         private const val COLOR_NORMAL_HORIZON = 0xFFFF9E1B.toInt()
         private const val COLOR_TEXT_NORMAL = 0xFFE2E8F0.toInt()
     }
-    }
 }
